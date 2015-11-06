@@ -1,6 +1,34 @@
 <resources>
     <string name="app_name">AdvAndroidHomework2</string>
 
+    <!-- Strings related to login -->
+    <string name="prompt_email">Email</string>
+    <string name="prompt_password">Password (optional)</string>
+    <string name="action_sign_in">Sign in or register</string>
+    <string name="action_sign_in_short">Sign in</string>
+    <string name="error_invalid_email">This email address is invalid</string>
+    <string name="error_invalid_password">This password is too short</string>
+    <string name="error_incorrect_password">This password is incorrect</string>
+    <string name="error_field_required">This field is required</string>
+    <string name="permission_rationale">"Contacts permissions are needed for providing email completions."</string>
+    <string name="email">Email</string>
+    <string name="password">Password</string>
+    <string name="login_button_text">Login</string>
+
+    <!-- Strings related with URLs -->
+    <string name="registration_url">register</string>
+    <string name="authorization_url">auth</string>
+    <string name="channel_list_url">channellist</string>
+    <string name="user_information_url">userinfo</string>
+    <string name="enter_to_channel_url">enter</string>
+    <string name="leave_channel_url">leave</string>
+
+    <!-- Strings related with HTTP Request -->
+    <string name="too_few_params">Too few request params</string>
+    <string name="error_connecting">Error connecting to resource</string>
+    <string name="incorrect_url">Incorrect URL</string>
+    <string name="unknown_host">Unknown host</string>
+
 <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
 </resources>

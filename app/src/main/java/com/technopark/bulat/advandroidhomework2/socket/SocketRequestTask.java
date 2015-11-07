@@ -13,6 +13,7 @@ import java.lang.ref.WeakReference;
 import java.net.Socket;
 import java.net.UnknownHostException;
 import java.nio.charset.Charset;
+import java.util.concurrent.TimeUnit;
 
 import javax.net.SocketFactory;
 import javax.net.ssl.HostnameVerifier;
@@ -35,6 +36,12 @@ public class SocketRequestTask extends AsyncTask<String, Integer, String> {
 
     @Override
     protected String doInBackground(String... params) {
+        // TODO
+        try {
+            TimeUnit.SECONDS.sleep(1);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
         if (params != null && params.length > 1) {
             String address = params[0];
             Integer port = Integer.valueOf(params[1]);

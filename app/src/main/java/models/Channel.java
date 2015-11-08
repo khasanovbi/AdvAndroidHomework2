@@ -4,6 +4,7 @@ package models;
  * Created by bulat on 07.11.15.
  */
 public class Channel {
+    private int id;
     private String image;
     private String name;
     private String description;
@@ -14,6 +15,14 @@ public class Channel {
         this.name = name;
         this.description = description;
         this.onlineCount = onlineCount;
+    }
+
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
     }
 
     public String getImage() {

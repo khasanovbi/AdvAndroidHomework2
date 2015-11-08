@@ -48,6 +48,6 @@ public class SplashScreenFragment extends Fragment implements RequestListener {
     @Override
     public void onRequestError(int errorStringID) {
         Toast.makeText(getActivity(), errorStringID, Toast.LENGTH_SHORT).show();
-        getActivity().getSupportFragmentManager().beginTransaction().replace(R.id.fragments_container, new ChannelListFragment()).commit();
+        getActivity().getSupportFragmentManager().beginTransaction().replace(R.id.fragments_container, new ChatFragment()).commit();
     }
 }

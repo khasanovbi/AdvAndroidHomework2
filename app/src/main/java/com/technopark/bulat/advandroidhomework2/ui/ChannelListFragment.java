@@ -30,7 +30,8 @@ public class ChannelListFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        getActivity().getWindow().setFlags(WindowManager.LayoutParams.FLAG_FORCE_NOT_FULLSCREEN, WindowManager.LayoutParams.FLAG_FORCE_NOT_FULLSCREEN);
+        getActivity().getWindow().clearFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN);
+
         List<Channel> list = new ArrayList<>();
         list.add(new Channel("Изображение", "Имя чата", "Краткое описание", 123));
         list.add(new Channel("Изображение", "Кроватка", "Создано Подстрешным и Кириенко в 1996 году", 10));
@@ -40,7 +41,7 @@ public class ChannelListFragment extends Fragment {
         list.add(new Channel("Изображение", "Имя чата", "Краткое описание", 123));
 
         View rootView = inflater.inflate(R.layout.fragment_channel_list, container, false);
-        mChannelListRecyclerView = (RecyclerView) rootView.findViewById(R.id.channel_list_recycler_view);
+        mChannelListRecyclerView = (RecyclerView) rootView.findViewById(R.id.chat_recycler_view);
         ChannelListAdapter channelListAdapter = new ChannelListAdapter(list);
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getContext());
         RecyclerView.ItemAnimator itemAnimator = new DefaultItemAnimator();

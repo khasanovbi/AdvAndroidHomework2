@@ -6,6 +6,7 @@ import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.preference.Preference;
 import android.preference.PreferenceFragment;
+import android.view.WindowManager;
 
 import com.technopark.bulat.advandroidhomework2.R;
 
@@ -15,8 +16,9 @@ import com.technopark.bulat.advandroidhomework2.R;
 public class SettingsFragment extends PreferenceFragment  implements SharedPreferences.OnSharedPreferenceChangeListener {
     @Override
     public void onCreate(Bundle savedInstanceState) {
+        getActivity().getWindow().clearFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN);
         super.onCreate(savedInstanceState);
-        addPreferencesFromResource(R.xml.user_settings);
+        addPreferencesFromResource(R.xml.auth_settings);
     }
 
     @Override

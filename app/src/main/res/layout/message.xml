@@ -3,33 +3,36 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <ImageView
+    <TextView
+        android:id="@+id/message_author"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:id="@+id/channel_image"
-        android:src="@android:color/background_dark"
         android:layout_alignParentTop="true"
+        android:layout_marginLeft="50dp"
+        android:layout_marginStart="50dp"
+        android:text="@string/message_author"
+        android:textAppearance="?android:attr/textAppearanceSmall" />
+
+    <ImageView
+        android:id="@+id/author_image"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:adjustViewBounds="true"
         android:layout_alignParentLeft="true"
         android:layout_alignParentStart="true"
-        android:layout_marginTop="37dp" />
+        android:maxWidth="@dimen/message_author_max_width"
+        android:layout_below="@id/message_author"
+        android:src="@mipmap/ic_launcher" />
 
     <TextView
+        android:id="@+id/message_text"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:textAppearance="?android:attr/textAppearanceMedium"
-        android:text="Medium Text"
-        android:id="@+id/channel_name"
-        android:layout_marginLeft="41dp"
-        android:layout_marginStart="41dp"
-        android:layout_alignParentTop="true" />
+        android:layout_alignLeft="@id/message_author"
+        android:layout_alignStart="@id/message_author"
+        android:layout_below="@id/message_author"
+        android:background="@drawable/message_rectangle"
+        android:text="@string/message_text"
+        android:textAppearance="?android:attr/textAppearanceMedium" />
 
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:textAppearance="?android:attr/textAppearanceSmall"
-        android:text="Small Text"
-        android:id="@+id/channel_description"
-        android:layout_below="@id/channel_name"
-        android:layout_alignLeft="@id/channel_name"
-        android:layout_alignStart="@id/channel_name" />
 </RelativeLayout>

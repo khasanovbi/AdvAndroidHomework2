@@ -10,6 +10,7 @@ import com.technopark.bulat.advandroidhomework2.R;
 
 public class MainActivity extends FragmentActivity {
     private FragmentManager fragmentManager;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         requestWindowFeature(Window.FEATURE_NO_TITLE);

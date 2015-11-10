@@ -41,7 +41,7 @@ public class ChannelListFragment extends Fragment {
         list.add(new Channel("Изображение", "Имя чата", "Краткое описание", 123));
 
         View rootView = inflater.inflate(R.layout.fragment_channel_list, container, false);
-        mChannelListRecyclerView = (RecyclerView) rootView.findViewById(R.id.chat_recycler_view);
+        mChannelListRecyclerView = (RecyclerView) rootView.findViewById(R.id.channel_list_recycler_view);
         ChannelListAdapter channelListAdapter = new ChannelListAdapter(list);
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getContext());
         RecyclerView.ItemAnimator itemAnimator = new DefaultItemAnimator();

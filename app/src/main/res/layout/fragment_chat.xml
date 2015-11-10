@@ -2,6 +2,9 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:layout_marginLeft="@dimen/fragment_horizontal_margin"
+    android:layout_marginRight="@dimen/fragment_horizontal_margin"
+
     tools:context="com.technopark.bulat.advandroidhomework2.ui.ChatFragment">
 
     <android.support.v7.widget.RecyclerView

@@ -9,16 +9,17 @@ import java.util.concurrent.TimeUnit;
  * Created by bulat on 05.11.15.
  */
 public class PreloadTask extends AsyncTask<Void, Void, Void> {
-    private FragmentCallback fragmentCallback;
+    private OnPreloadTaskDone fragmentCallback;
+    private int sleepTime = 2;
 
-    public PreloadTask(FragmentCallback fragmentCallback) {
+    public PreloadTask(OnPreloadTaskDone fragmentCallback) {
         this.fragmentCallback = fragmentCallback;
     }
 
     @Override
     protected Void doInBackground(Void... params) {
         try {
-            TimeUnit.SECONDS.sleep(2);
+            TimeUnit.SECONDS.sleep(sleepTime);
         } catch (InterruptedException ignored) {}
         return null;
     }
@@ -26,6 +27,6 @@ public class PreloadTask extends AsyncTask<Void, Void, Void> {
     @Override
     protected void onPostExecute(Void aVoid) {
         super.onPostExecute(aVoid);
-        fragmentCallback.onTaskDone();
+        fragmentCallback.onPreloadTaskDone();
     }
 }

@@ -46,7 +46,7 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/password"
+            android:text="@string/nickname"
             android:textAppearance="?android:attr/textAppearanceSmall" />
 
         <EditText
@@ -57,11 +57,11 @@
             android:inputType="textAutoComplete" />
 
         <Button
-            android:id="@+id/login_button"
+            android:id="@+id/register_button"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center_horizontal"
-            android:text="@string/login_button_text" />
+            android:text="@string/register_button_text" />
 
     </LinearLayout>
 </ScrollView>

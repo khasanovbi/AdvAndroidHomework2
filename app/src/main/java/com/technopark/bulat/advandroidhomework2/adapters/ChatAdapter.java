@@ -9,23 +9,34 @@ import android.widget.TextView;
 
 import com.technopark.bulat.advandroidhomework2.R;
 
+import java.util.ArrayList;
 import java.util.List;
 
-import models.Message;
+import com.technopark.bulat.advandroidhomework2.models.GlobalUserIds;
+import com.technopark.bulat.advandroidhomework2.models.Message;
 
 /**
  * Created by bulat on 08.11.15.
  */
 public class ChatAdapter extends RecyclerView.Adapter<ChatAdapter.MessageViewHolder> {
     private List<Message> messages;
+    private final static int ANOTHER_USER = 0, CURRENT_USER = 1;
 
-    public ChatAdapter(List<Message> messages) {
-        this.messages = messages;
+    public ChatAdapter() {
+        messages = new ArrayList<>();
     }
 
     @Override
     public MessageViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.message, parent, false);
+        View view = null;
+        switch (viewType) {
+            case ANOTHER_USER:
+                view = LayoutInflater.from(parent.getContext()).inflate(R.layout.message_another_user, parent, false);
+                break;
+            case CURRENT_USER:
+                view = LayoutInflater.from(parent.getContext()).inflate(R.layout.message_current_user, parent, false);
+                break;
+        }
         return new MessageViewHolder(view);
     }
 
@@ -33,13 +44,26 @@ public class ChatAdapter extends RecyclerView.Adapter<ChatAdapter.MessageViewHol
     public void onBindViewHolder(MessageViewHolder holder, int position) {
         Message message = messages.get(position);
         holder.mMessageText.setText(message.getText());
-        holder.mMessageAuthor.setText(message.getAuthor().getNickName());
-        // TODO add image
+        holder.mMessageAuthor.setText(message.getAuthorNickname());
     }
 
     @Override
     public int getItemCount() {
         return messages.size();
+    }
+
+    @Override
+    public int getItemViewType(int position) {
+        String z = GlobalUserIds.getInstance().sid;
+        if (messages.get(position).getAuthorId().equals(GlobalUserIds.getInstance().sid)) {
+            return CURRENT_USER;
+        } else
+            return ANOTHER_USER;
+    }
+
+    public void add(Message message) {
+        messages.add(message);
+        notifyItemInserted(getItemCount());
     }
 
     public class MessageViewHolder extends RecyclerView.ViewHolder {

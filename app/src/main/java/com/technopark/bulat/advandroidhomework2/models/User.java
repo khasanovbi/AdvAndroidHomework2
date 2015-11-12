@@ -1,29 +1,29 @@
-package models;
+package com.technopark.bulat.advandroidhomework2.models;
 
 /**
  * Created by bulat on 08.11.15.
  */
 public class User {
-    private String nickName;
+    private String nickname;
     private String password;
     private String email;
     private String status;
     private String image;
 
-    public User(String nickName, String email, String status, String image) {
-        this.nickName = nickName;
+    public User(String nickname, String email, String status, String image) {
+        this.nickname = nickname;
         this.password = password;
         this.email = email;
         this.status = status;
         this.image = image;
     }
 
-    public String getNickName() {
-        return nickName;
+    public String getNickname() {
+        return nickname;
     }
 
-    public void setNickName(String nickName) {
-        this.nickName = nickName;
+    public void setNickname(String nickname) {
+        this.nickname = nickname;
     }
 
     public String getPassword() {

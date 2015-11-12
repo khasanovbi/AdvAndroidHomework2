@@ -10,8 +10,10 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.widget.EditText;
+import android.widget.Toast;
 
 import com.technopark.bulat.advandroidhomework2.R;
+import com.technopark.bulat.advandroidhomework2.models.GlobalUserIds;
 import com.technopark.bulat.advandroidhomework2.socket.RequestListener;
 import com.technopark.bulat.advandroidhomework2.socket.SocketRequestTask;
 
@@ -66,7 +68,6 @@ public class LoginFragment extends Fragment implements OnClickListener, RequestL
                 socketRequestTask.execute(prepareLoginRequestString(login, password));
             }
         }
-
     }
 
     public static String prepareLoginRequestString(String login, String password) {
@@ -86,7 +87,21 @@ public class LoginFragment extends Fragment implements OnClickListener, RequestL
 
     @Override
     public void onRequestResult(String result) {
+        try {
+            JSONObject jsonObject = new JSONObject(result);
+            JSONObject data = jsonObject.getJSONObject("data");
+            int status = Integer.valueOf(data.getString("status"));
+            if (status != 0) {
+                Toast.makeText(getActivity(), data.getString("error"), Toast.LENGTH_SHORT).show();
+            } else {
+                GlobalUserIds.getInstance().cid = data.getString("cid");
+                GlobalUserIds.getInstance().sid = data.getString("sid");
+                getActivity().getSupportFragmentManager().beginTransaction().replace(R.id.fragments_container, new ChannelListFragment()).commit();
+            }
 
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
     }
 
     @Override

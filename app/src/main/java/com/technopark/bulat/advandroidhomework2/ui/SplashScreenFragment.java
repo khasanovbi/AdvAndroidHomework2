@@ -68,7 +68,6 @@ public class SplashScreenFragment extends Fragment implements RequestListener, O
     @Override
     public void onRequestResult(String result) {
         Toast.makeText(getActivity(), result, Toast.LENGTH_SHORT).show();
-        Log.d("Socket", "Response: " + result);
         getActivity().getSupportFragmentManager().beginTransaction().replace(R.id.fragments_container, new ChannelListFragment()).commit();
     }
 

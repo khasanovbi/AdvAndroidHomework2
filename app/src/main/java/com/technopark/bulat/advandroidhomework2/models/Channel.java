@@ -1,14 +1,20 @@
-package models;
+package com.technopark.bulat.advandroidhomework2.models;
+
+import java.io.Serializable;
 
 /**
  * Created by bulat on 07.11.15.
  */
-public class Channel {
-    private int id;
+public class Channel implements Serializable {
+    public static final String descriptionKey = "Channel";
+    private String chid;
     private String image;
     private String name;
     private String description;
     private int onlineCount;
+
+    public Channel() {
+    }
 
     public Channel(String image, String name, String description, int onlineCount) {
         this.image = image;
@@ -17,12 +23,12 @@ public class Channel {
         this.onlineCount = onlineCount;
     }
 
-    public int getId() {
-        return id;
+    public String getChid() {
+        return chid;
     }
 
-    public void setId(int id) {
-        this.id = id;
+    public void setChid(String chid) {
+        this.chid = chid;
     }
 
     public String getImage() {

@@ -12,12 +12,12 @@ import java.net.UnknownHostException;
  * Created by bulat on 06.11.15.
  */
 public class SocketRequestTask extends AsyncTask<String, Integer, String> {
-    private WeakReference<RequestListener> mListener;
+    private RequestListener mListener;
     private int mErrorStringID;
     private static final String logTag = "Socket";
 
     public SocketRequestTask(RequestListener listener) {
-        mListener = new WeakReference<>(listener);
+        mListener = listener;
     }
 
     @Override
@@ -39,12 +39,11 @@ public class SocketRequestTask extends AsyncTask<String, Integer, String> {
     @Override
     protected void onPostExecute(String s) {
         if (!isCancelled()) {
-            RequestListener l = mListener.get();
-            if (l != null) {
+            if (mListener != null) {
                 if (s != null) {
-                    l.onRequestResult(s);
+                    mListener.onRequestResult(s);
                 } else {
-                    l.onRequestError(mErrorStringID);
+                    mListener.onRequestError(mErrorStringID);
                 }
             }
         }

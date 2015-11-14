@@ -6,7 +6,6 @@ import android.support.v4.app.Fragment;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -32,17 +31,12 @@ import java.util.Map;
 /**
  * A simple {@link Fragment} subclass.
  */
-public class ChatFragment extends Fragment implements RequestListener, OnClickListener {
-    private RecyclerView mChatRecyclerView;
+public class ChatFragment extends Fragment implements OnClickListener {
     private ChatAdapter mChatAdapter;
     private Channel mChannel;
     private SocketRequestTask mSocketRequestTask;
     private EditText mMessageEditText;
-
-    public ChatFragment() {
-        // Required empty public constructor
-    }
-
+    private RecyclerView mChatRecyclerView;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -51,7 +45,17 @@ public class ChatFragment extends Fragment implements RequestListener, OnClickLi
         if (mSocketRequestTask != null) {
             mSocketRequestTask.cancel(true);
         }
-        mSocketRequestTask = new SocketRequestTask(this);
+        mSocketRequestTask = new SocketRequestTask(new RequestListener() {
+            @Override
+            public void onRequestResult(String result) {
+                onEnterChatResult(result);
+            }
+
+            @Override
+            public void onRequestError(int errorStringID) {
+
+            }
+        });
         mSocketRequestTask.execute(prepareChatRequestString(mChannel));
 
         View rootView = inflater.inflate(R.layout.fragment_chat, container, false);
@@ -84,7 +88,7 @@ public class ChatFragment extends Fragment implements RequestListener, OnClickLi
         return jsonObject.toString();
     }
 
-    public static String prepareSendMessageString(Channel channel, String messageText) {
+    public static String prepareSendMessageRequestString(Channel channel, String messageText) {
         Map<String, String> data = new HashMap<>();
         data.put("cid", GlobalUserIds.getInstance().cid);
         data.put("sid", GlobalUserIds.getInstance().sid);
@@ -100,8 +104,7 @@ public class ChatFragment extends Fragment implements RequestListener, OnClickLi
         return jsonObject.toString();
     }
 
-    @Override
-    public void onRequestResult(String result) {
+    public void onEnterChatResult(String result) {
         try {
             JSONObject jsonObject = new JSONObject(result);
             JSONObject data = jsonObject.getJSONObject("data");
@@ -144,20 +147,34 @@ public class ChatFragment extends Fragment implements RequestListener, OnClickLi
                 message.setTime("123.123");
                 mChatAdapter.add(message);
             }
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+    }
 
+    public void onMessageSentResult(String result) {
+        try {
+            JSONObject jsonObject = new JSONObject(result);
+            JSONObject data = jsonObject.getJSONObject("data");
+            int status = Integer.valueOf(data.getString("status"));
+            if (status != 0) {
+                Toast.makeText(getActivity(), data.getString("error"), Toast.LENGTH_SHORT).show();
+            } else {
+                Message mCurrentUserMessage = new Message();
+                mCurrentUserMessage.setText(mMessageEditText.getText().toString());
+                mCurrentUserMessage.setAuthorId(GlobalUserIds.getInstance().cid);
+                mCurrentUserMessage.setAuthorNickname("Вы");
+                mChatAdapter.add(mCurrentUserMessage);
+                mMessageEditText.setText("");
+                mChatRecyclerView.scrollToPosition(mChatAdapter.getItemCount() - 1);
+            }
         } catch (JSONException e) {
             e.printStackTrace();
         }
     }
 
     @Override
-    public void onRequestError(int errorStringID) {
-
-    }
-
-    @Override
     public void onClick(View v) {
-        Log.d("123", "123");
         switch (v.getId()) {
             case R.id.send_button:
                 String messageText = mMessageEditText.getText().toString();
@@ -165,8 +182,18 @@ public class ChatFragment extends Fragment implements RequestListener, OnClickLi
                     if (mSocketRequestTask != null) {
                         mSocketRequestTask.cancel(true);
                     }
-                    mSocketRequestTask = new SocketRequestTask(this);
-                    mSocketRequestTask.execute(prepareSendMessageString(mChannel, messageText));
+                    mSocketRequestTask = new SocketRequestTask(new RequestListener() {
+                        @Override
+                        public void onRequestResult(String result) {
+                            onMessageSentResult(result);
+                        }
+
+                        @Override
+                        public void onRequestError(int errorStringID) {
+
+                        }
+                    });
+                    mSocketRequestTask.execute(prepareSendMessageRequestString(mChannel, messageText));
                 }
                 break;
         }

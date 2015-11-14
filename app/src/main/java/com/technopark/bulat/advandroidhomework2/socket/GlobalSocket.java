@@ -18,11 +18,10 @@ import java.nio.charset.Charset;
  */
 public class GlobalSocket {
     private static volatile GlobalSocket instance;
-    private static final String host = "188.166.49.215";
-    private static final int port = 7777;
-    private static String logTag = "GlobalSocket";
-
-    public Socket socket;
+    private static final String HOST = "188.166.49.215";
+    private static final int PORT = 7777;
+    private static final String LOG_TAG = "GlobalSocket";
+    private Socket socket;
 
     public static GlobalSocket getInstance() {
         GlobalSocket localInstance = instance;
@@ -43,10 +42,10 @@ public class GlobalSocket {
 
     public void connect() {
         try {
-            socket = new Socket(host, port);
+            socket = new Socket(HOST, PORT);
             InputStream is = new BufferedInputStream(socket.getInputStream());
             String output = readInputStream(is);
-            Log.d(logTag, output);
+            Log.d(LOG_TAG, output);
             //is.close();
         } catch (IOException e) {
             e.printStackTrace();
@@ -67,7 +66,8 @@ public class GlobalSocket {
             try {
                 JSONObject jsonObject = new JSONObject(outputStream.toString("utf-8"));
                 break;
-            } catch (JSONException ignored) {}
+            } catch (JSONException ignored) {
+            }
         }
 
         outputStream.flush();
@@ -87,7 +87,7 @@ public class GlobalSocket {
         os.write(getRequestBytes(requestString));
         os.flush();
         String output = readInputStream(is);
-        Log.d(logTag, "Response: " + output);
+        Log.d(LOG_TAG, "Response: " + output);
         return output;
     }
 }

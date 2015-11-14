@@ -16,6 +16,7 @@ import android.widget.Toast;
 
 import com.technopark.bulat.advandroidhomework2.asyncTasks.OnPreloadTaskDone;
 import com.technopark.bulat.advandroidhomework2.asyncTasks.PreloadTask;
+import com.technopark.bulat.advandroidhomework2.models.GlobalUserIds;
 import com.technopark.bulat.advandroidhomework2.socket.RequestListener;
 import com.technopark.bulat.advandroidhomework2.socket.SocketRequestTask;
 import com.technopark.bulat.advandroidhomework2.R;
@@ -68,7 +69,24 @@ public class SplashScreenFragment extends Fragment implements RequestListener, O
     @Override
     public void onRequestResult(String result) {
         Toast.makeText(getActivity(), result, Toast.LENGTH_SHORT).show();
-        getActivity().getSupportFragmentManager().beginTransaction().replace(R.id.fragments_container, new ChannelListFragment()).commit();
+        try {
+            JSONObject jsonObject = new JSONObject(result);
+            JSONObject data = jsonObject.getJSONObject("data");
+            int status = data.getInt("status");
+            if (status != 0) {
+                Toast.makeText(getActivity(), data.getString("error"), Toast.LENGTH_SHORT).show();
+                switch (status) {
+                    case 7:
+                        getActivity().getSupportFragmentManager().beginTransaction().replace(R.id.fragments_container, new RegisterFragment()).commit();
+                }
+            } else {
+                GlobalUserIds.getInstance().cid = data.getString("cid");
+                GlobalUserIds.getInstance().sid = data.getString("sid");
+                getActivity().getSupportFragmentManager().beginTransaction().replace(R.id.fragments_container, new ChannelListFragment()).commit();
+            }
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
     }
 
     @Override

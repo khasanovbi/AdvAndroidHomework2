@@ -54,7 +54,6 @@ public class ChatAdapter extends RecyclerView.Adapter<ChatAdapter.MessageViewHol
 
     @Override
     public int getItemViewType(int position) {
-        String z = GlobalUserIds.getInstance().sid;
         if (messages.get(position).getAuthorId().equals(GlobalUserIds.getInstance().sid)) {
             return CURRENT_USER;
         } else

@@ -17,8 +17,6 @@ public class ChangeContactInfoFragment extends Fragment {
 
 
     public ChangeContactInfoFragment() {
-
-
         // Required empty public constructor
     }
 

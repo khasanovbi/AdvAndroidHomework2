@@ -43,7 +43,6 @@ public class ChannelListAdapter extends RecyclerView.Adapter<ChannelListAdapter.
         stringBuilder.append(" (").append(String.valueOf(channel.getOnlineCount())).append(")");
         holder.mName.setText(stringBuilder.toString());
         holder.mDescription.setText(channel.getDescription());
-        // TODO image
     }
 
     @Override
@@ -71,7 +70,6 @@ public class ChannelListAdapter extends RecyclerView.Adapter<ChannelListAdapter.
     public class ChannelViewHolder extends RecyclerView.ViewHolder implements OnClickListener {
         private TextView mName;
         private TextView mDescription;
-        private ImageView mImage;
 
         public ChannelViewHolder(View itemView) {
             super(itemView);

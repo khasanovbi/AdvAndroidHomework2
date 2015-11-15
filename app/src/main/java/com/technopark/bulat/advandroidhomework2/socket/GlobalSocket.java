@@ -21,7 +21,9 @@ public class GlobalSocket {
     private static final String HOST = "188.166.49.215";
     private static final int PORT = 7777;
     private static final String LOG_TAG = "GlobalSocket";
-    private Socket socket;
+    private static Socket socket;
+    private InputStream inputStream;
+    private OutputStream outputStream;
 
     public static GlobalSocket getInstance() {
         GlobalSocket localInstance = instance;
@@ -43,10 +45,10 @@ public class GlobalSocket {
     public void connect() {
         try {
             socket = new Socket(HOST, PORT);
-            InputStream is = new BufferedInputStream(socket.getInputStream());
-            String output = readInputStream(is);
+            inputStream = new BufferedInputStream(socket.getInputStream());
+            outputStream = socket.getOutputStream();
+            String output = readInputStream(inputStream);
             Log.d(LOG_TAG, output);
-            //is.close();
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -61,7 +63,11 @@ public class GlobalSocket {
             if (read > 0) {
                 outputStream.write(data, 0, read);
             } else {
-                break;
+                if (read == 0) {
+                    break;
+                } else {
+                    socket = new Socket(HOST, PORT);
+                }
             }
             try {
                 JSONObject jsonObject = new JSONObject(outputStream.toString("utf-8"));
@@ -82,11 +88,9 @@ public class GlobalSocket {
         if (socket == null || !socket.isConnected()) {
             GlobalSocket.getInstance().connect();
         }
-        InputStream is = new BufferedInputStream(socket.getInputStream());
-        OutputStream os = socket.getOutputStream();
-        os.write(getRequestBytes(requestString));
-        os.flush();
-        String output = readInputStream(is);
+        outputStream.write(getRequestBytes(requestString));
+        outputStream.flush();
+        String output = readInputStream(inputStream);
         Log.d(LOG_TAG, "Response: " + output);
         return output;
     }

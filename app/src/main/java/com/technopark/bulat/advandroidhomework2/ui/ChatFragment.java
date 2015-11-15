@@ -14,6 +14,7 @@ import android.widget.EditText;
 import android.widget.Toast;
 
 import com.technopark.bulat.advandroidhomework2.R;
+import com.technopark.bulat.advandroidhomework2.adapters.ChannelListAdapter;
 import com.technopark.bulat.advandroidhomework2.adapters.ChatAdapter;
 import com.technopark.bulat.advandroidhomework2.models.Channel;
 import com.technopark.bulat.advandroidhomework2.models.GlobalUserIds;
@@ -31,7 +32,7 @@ import java.util.Map;
 /**
  * A simple {@link Fragment} subclass.
  */
-public class ChatFragment extends Fragment implements OnClickListener {
+public class ChatFragment extends Fragment implements OnClickListener, ChatAdapter.OnItemClickListener {
     private ChatAdapter mChatAdapter;
     private Channel mChannel;
     private SocketRequestTask mSocketRequestTask;
@@ -62,8 +63,10 @@ public class ChatFragment extends Fragment implements OnClickListener {
         mChatRecyclerView = (RecyclerView) rootView.findViewById(R.id.chat_recycler_view);
 
         mChatAdapter = new ChatAdapter();
+        mChatAdapter.setOnItemClickListener(this);
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getContext());
         RecyclerView.ItemAnimator itemAnimator = new DefaultItemAnimator();
+
         mChatRecyclerView.setAdapter(mChatAdapter);
         mChatRecyclerView.setLayoutManager(linearLayoutManager);
         mChatRecyclerView.setItemAnimator(itemAnimator);
@@ -197,5 +200,10 @@ public class ChatFragment extends Fragment implements OnClickListener {
                 }
                 break;
         }
+    }
+
+    @Override
+    public void onItemClick(ChatAdapter.MessageViewHolder item, int position) {
+        getActivity().getSupportFragmentManager().beginTransaction().replace(R.id.fragments_container, new ContactInfoFragment()).commit();
     }
 }

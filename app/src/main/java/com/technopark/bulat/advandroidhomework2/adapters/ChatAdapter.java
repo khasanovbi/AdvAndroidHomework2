@@ -8,12 +8,11 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.technopark.bulat.advandroidhomework2.R;
+import com.technopark.bulat.advandroidhomework2.models.GlobalUserIds;
+import com.technopark.bulat.advandroidhomework2.models.Message;
 
 import java.util.ArrayList;
 import java.util.List;
-
-import com.technopark.bulat.advandroidhomework2.models.GlobalUserIds;
-import com.technopark.bulat.advandroidhomework2.models.Message;
 
 /**
  * Created by bulat on 08.11.15.
@@ -21,6 +20,7 @@ import com.technopark.bulat.advandroidhomework2.models.Message;
 public class ChatAdapter extends RecyclerView.Adapter<ChatAdapter.MessageViewHolder> {
     private List<Message> messages;
     private final static int ANOTHER_USER = 0, CURRENT_USER = 1;
+    private OnItemClickListener onItemClickListener;
 
     public ChatAdapter() {
         messages = new ArrayList<>();
@@ -54,10 +54,22 @@ public class ChatAdapter extends RecyclerView.Adapter<ChatAdapter.MessageViewHol
 
     @Override
     public int getItemViewType(int position) {
-        if (messages.get(position).getAuthorId().equals(GlobalUserIds.getInstance().sid)) {
+        if (messages.get(position).getAuthorId().equals(GlobalUserIds.getInstance().cid)) {
             return CURRENT_USER;
         } else
             return ANOTHER_USER;
+    }
+
+    public OnItemClickListener getOnItemClickListener() {
+        return onItemClickListener;
+    }
+
+    public void setOnItemClickListener(OnItemClickListener listener) {
+        onItemClickListener = listener;
+    }
+
+    public interface OnItemClickListener {
+        void onItemClick(MessageViewHolder item, int position);
     }
 
     public void add(Message message) {
@@ -65,16 +77,25 @@ public class ChatAdapter extends RecyclerView.Adapter<ChatAdapter.MessageViewHol
         notifyItemInserted(getItemCount());
     }
 
-    public class MessageViewHolder extends RecyclerView.ViewHolder {
+    public class MessageViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
         private TextView mMessageText;
         private TextView mMessageAuthor;
-        private ImageView mAuthorImage;
+        public ImageView mAuthorImage;
 
         public MessageViewHolder(View itemView) {
             super(itemView);
             mMessageText = (TextView) itemView.findViewById(R.id.message_text);
             mMessageAuthor = (TextView) itemView.findViewById(R.id.message_author);
             mAuthorImage = (ImageView) itemView.findViewById(R.id.author_image);
+            mAuthorImage.setOnClickListener(this);
+        }
+
+        @Override
+        public void onClick(View v) {
+            final OnItemClickListener listener = getOnItemClickListener();
+            if (listener != null) {
+                listener.onItemClick(this, getAdapterPosition());
+            }
         }
     }
 }

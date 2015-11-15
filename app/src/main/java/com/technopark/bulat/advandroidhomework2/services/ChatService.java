@@ -14,10 +14,6 @@ public class ChatService extends IntentService {
         super("ChatService");
     }
 
-    void connect() {
-
-    }
-
     @Override
     protected void onHandleIntent(Intent intent) {
         String request = intent.getStringExtra("request");

@@ -3,7 +3,6 @@ package com.technopark.bulat.advandroidhomework2.network.response.events;
 import android.util.Log;
 
 import com.technopark.bulat.advandroidhomework2.models.Message;
-import com.technopark.bulat.advandroidhomework2.network.response.ResponseMessage;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -13,6 +12,8 @@ import org.json.JSONObject;
  */
 public class MessageEvent {
     private static final String LOG_TAG = "Message: messageEvent";
+    private String channelId;
+    private Message message;
 
     public String getChannelId() {
         return channelId;
@@ -22,16 +23,14 @@ public class MessageEvent {
         return message;
     }
 
-    private String channelId;
-    private Message message;
-
     public void parse(JSONObject jsonData) {
         Log.d(LOG_TAG, jsonData.toString());
         try {
             channelId = jsonData.getString("chid");
+            message = new Message();
             message.setAuthorId(jsonData.getString("from"));
             message.setAuthorNickname(jsonData.getString("nick"));
-            message.setText("body");
+            message.setText(jsonData.getString("body"));
         } catch (JSONException e) {
             e.printStackTrace();
         }

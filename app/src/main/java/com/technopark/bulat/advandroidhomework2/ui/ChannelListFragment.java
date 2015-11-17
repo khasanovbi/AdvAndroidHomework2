@@ -35,9 +35,8 @@ public class ChannelListFragment extends Fragment implements ChannelListAdapter.
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         ((MainActivity) getActivity()).unsetFullScreenFlag();
-        GlobalSocket.getInstance().performAsyncRequest(new ChannelList(GlobalUserIds.getInstance().cid, GlobalUserIds.getInstance().sid));
-        //mRequestTask.execute(prepareChannelListRequestString());
         GlobalSocket.getInstance().registerObserver(this);
+        GlobalSocket.getInstance().performAsyncRequest(new ChannelList(GlobalUserIds.getInstance().cid, GlobalUserIds.getInstance().sid));
         View rootView = inflater.inflate(R.layout.fragment_channel_list, container, false);
         mChannelListRecyclerView = (RecyclerView) rootView.findViewById(R.id.channel_list_recycler_view);
         mChannelListAdapter = new ChannelListAdapter();

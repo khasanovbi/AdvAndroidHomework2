@@ -12,7 +12,7 @@ import org.json.JSONObject;
  * Created by bulat on 15.11.15.
  */
 public class LeaveEvent {
-    private static final String LOG_TAG = "Message: enterEvent";
+    private static final String LOG_TAG = "Message: leaveEvent";
     private User user;
     private String channelId;
 

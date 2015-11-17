@@ -13,24 +13,20 @@ import android.widget.EditText;
 import android.widget.Toast;
 
 import com.technopark.bulat.advandroidhomework2.R;
-import com.technopark.bulat.advandroidhomework2.socket.RequestListener;
-import com.technopark.bulat.advandroidhomework2.socket.SocketRequestTask;
-
-import org.json.JSONException;
-import org.json.JSONObject;
-
-import java.util.HashMap;
-import java.util.Map;
+import com.technopark.bulat.advandroidhomework2.network.request.messages.Auth;
+import com.technopark.bulat.advandroidhomework2.network.request.messages.Registration;
+import com.technopark.bulat.advandroidhomework2.network.response.ResponseMessage;
+import com.technopark.bulat.advandroidhomework2.network.socket.GlobalSocket;
+import com.technopark.bulat.advandroidhomework2.network.socket.socketObserver.Observer;
 
 /**
  * A simple {@link Fragment} subclass.
  */
-public class RegisterFragment extends Fragment implements View.OnClickListener, RequestListener {
+public class RegisterFragment extends Fragment implements View.OnClickListener, Observer {
     private SharedPreferences sharedPreferences;
     private EditText mLoginEditText;
     private EditText mPasswordEditText;
     private EditText mNicknameEditText;
-    private SocketRequestTask socketRequestTask;
 
     public RegisterFragment() {
         // Required empty public constructor
@@ -41,6 +37,7 @@ public class RegisterFragment extends Fragment implements View.OnClickListener, 
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
+        GlobalSocket.getInstance().registerObserver(this);
         View rootView = inflater.inflate(R.layout.fragment_register, container, false);
         mLoginEditText = (EditText) rootView.findViewById(R.id.login_edit_text);
         mPasswordEditText = (EditText) rootView.findViewById(R.id.password_edit_text);
@@ -55,22 +52,6 @@ public class RegisterFragment extends Fragment implements View.OnClickListener, 
         return rootView;
     }
 
-    public String prepareRegisterRequestString(String login, String password, String nickname) {
-        Map<String, String> data = new HashMap<>();
-        data.put("login", login);
-        data.put("pass", password);
-        data.put("nick", nickname);
-
-        JSONObject jsonObject = new JSONObject();
-        try {
-            jsonObject.put("action", "register");
-            jsonObject.put("data", new JSONObject(data));
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
-        return jsonObject.toString();
-    }
-
     @Override
     public void onClick(View v) {
         switch (v.getId()) {
@@ -83,34 +64,26 @@ public class RegisterFragment extends Fragment implements View.OnClickListener, 
                 sharedPreferencesEditor.putString("password", password);
                 sharedPreferencesEditor.putString("nickname", nickname);
                 sharedPreferencesEditor.apply();
-                if (socketRequestTask != null) {
-                    socketRequestTask.cancel(true);
-                }
-                socketRequestTask = new SocketRequestTask(this);
-                socketRequestTask.execute(prepareRegisterRequestString(login, password, nickname));
+                GlobalSocket.getInstance().performAsyncRequest(new Registration(login, password, nickname));
             }
         }
     }
 
     @Override
-    public void onRequestResult(String result) {
-        try {
-            JSONObject jsonObject = new JSONObject(result);
-            JSONObject data = jsonObject.getJSONObject("data");
-            int status = Integer.valueOf(data.getString("status"));
-            if (status != 0) {
-                Toast.makeText(getActivity(), data.getString("error"), Toast.LENGTH_SHORT).show();
-            } else {
+    public void handleResponseMessage(ResponseMessage responseMessage) {
+        if (responseMessage.getAction().equals("register")) {
+            final com.technopark.bulat.advandroidhomework2.network.response.messages.Registration registration = new com.technopark.bulat.advandroidhomework2.network.response.messages.Registration();
+            registration.parse(responseMessage.getJsonData());
+            if (registration.getStatus() == 0) {
+                GlobalSocket.getInstance().removeObserver(this);
                 getActivity().getSupportFragmentManager().beginTransaction().replace(R.id.fragments_container, new ChannelListFragment()).commit();
+            } else {
+                getActivity().runOnUiThread(new Runnable() {
+                    public void run() {
+                        Toast.makeText(getActivity().getBaseContext(), registration.getError(), Toast.LENGTH_LONG).show();
+                    }
+                });
             }
-
-        } catch (JSONException e) {
-            e.printStackTrace();
         }
-    }
-
-    @Override
-    public void onRequestError(int errorStringID) {
-
     }
 }

@@ -14,15 +14,11 @@ import android.widget.EditText;
 import android.widget.Toast;
 
 import com.technopark.bulat.advandroidhomework2.R;
-import com.technopark.bulat.advandroidhomework2.adapters.ChannelListAdapter;
 import com.technopark.bulat.advandroidhomework2.adapters.ChatAdapter;
 import com.technopark.bulat.advandroidhomework2.models.Channel;
 import com.technopark.bulat.advandroidhomework2.models.GlobalUserIds;
 import com.technopark.bulat.advandroidhomework2.models.Message;
-import com.technopark.bulat.advandroidhomework2.socket.RequestListener;
-import com.technopark.bulat.advandroidhomework2.socket.SocketRequestTask;
 
-import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -35,7 +31,6 @@ import java.util.Map;
 public class ChatFragment extends Fragment implements OnClickListener, ChatAdapter.OnItemClickListener {
     private ChatAdapter mChatAdapter;
     private Channel mChannel;
-    private SocketRequestTask mSocketRequestTask;
     private EditText mMessageEditText;
     private RecyclerView mChatRecyclerView;
 
@@ -43,21 +38,7 @@ public class ChatFragment extends Fragment implements OnClickListener, ChatAdapt
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         mChannel = (Channel) getArguments().getSerializable(Channel.descriptionKey);
-        if (mSocketRequestTask != null) {
-            mSocketRequestTask.cancel(true);
-        }
-        mSocketRequestTask = new SocketRequestTask(new RequestListener() {
-            @Override
-            public void onRequestResult(String result) {
-                onEnterChatResult(result);
-            }
-
-            @Override
-            public void onRequestError(int errorStringID) {
-
-            }
-        });
-        mSocketRequestTask.execute(prepareChatRequestString(mChannel));
+        //mRequestTask.execute(prepareChatRequestString(mChannel));
 
         View rootView = inflater.inflate(R.layout.fragment_chat, container, false);
         mChatRecyclerView = (RecyclerView) rootView.findViewById(R.id.chat_recycler_view);
@@ -76,26 +57,11 @@ public class ChatFragment extends Fragment implements OnClickListener, ChatAdapt
         return rootView;
     }
 
-    public static String prepareChatRequestString(Channel channel) {
-        Map<String, String> data = new HashMap<>();
-        data.put("cid", GlobalUserIds.getInstance().cid);
-        data.put("sid", GlobalUserIds.getInstance().sid);
-        data.put("channel", channel.getChid());
-        JSONObject jsonObject = new JSONObject();
-        try {
-            jsonObject.put("action", "enter");
-            jsonObject.put("data", new JSONObject(data));
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
-        return jsonObject.toString();
-    }
-
     public static String prepareSendMessageRequestString(Channel channel, String messageText) {
         Map<String, String> data = new HashMap<>();
         data.put("cid", GlobalUserIds.getInstance().cid);
         data.put("sid", GlobalUserIds.getInstance().sid);
-        data.put("channel", channel.getChid());
+        data.put("channel", channel.getId());
         data.put("body", messageText);
         JSONObject jsonObject = new JSONObject();
         try {
@@ -112,44 +78,6 @@ public class ChatFragment extends Fragment implements OnClickListener, ChatAdapt
             JSONObject jsonObject = new JSONObject(result);
             JSONObject data = jsonObject.getJSONObject("data");
             int status = Integer.valueOf(data.getString("status"));
-            if (status != 0) {
-                Toast.makeText(getActivity(), data.getString("error"), Toast.LENGTH_SHORT).show();
-            } else {
-                /*
-                JSONArray users = data.getJSONArray("users");
-                for (int i = 0; i < users.length(); ++i) {
-                    JSONObject jsonUser = (JSONObject) users.get(i);
-                    String uid = jsonUser.getString("uid");
-                    String nickname = jsonUser.getString("nick");
-                    //mChannelListAdapter.add(channel);
-                }
-                */
-                JSONArray lastMessages = data.getJSONArray("last_msg");
-                for (int i = 0; i < lastMessages.length(); ++i) {
-                    Message message = new Message();
-                    JSONObject jsonMessage = (JSONObject) lastMessages.get(i);
-                    message.setId(jsonMessage.getString("mid"));
-                    message.setAuthorId(jsonMessage.getString("from"));
-                    message.setAuthorNickname(jsonMessage.getString("nick"));
-                    message.setText(jsonMessage.getString("body"));
-                    message.setTime(jsonMessage.getString("time"));
-                    mChatAdapter.add(message);
-                }
-                Message message = new Message();
-                message.setId("123");
-                message.setAuthorId("321");
-                message.setAuthorNickname("alesha");
-                message.setText("Привет лунатикам!");
-                message.setTime("123.123");
-                mChatAdapter.add(message);
-                message = new Message();
-                message.setId("123");
-                message.setAuthorId("123");
-                message.setAuthorNickname("alesha2");
-                message.setText("Привет лунатикам!2");
-                message.setTime("123.123");
-                mChatAdapter.add(message);
-            }
         } catch (JSONException e) {
             e.printStackTrace();
         }
@@ -182,21 +110,7 @@ public class ChatFragment extends Fragment implements OnClickListener, ChatAdapt
             case R.id.send_button:
                 String messageText = mMessageEditText.getText().toString();
                 if (!messageText.equals("")) {
-                    if (mSocketRequestTask != null) {
-                        mSocketRequestTask.cancel(true);
-                    }
-                    mSocketRequestTask = new SocketRequestTask(new RequestListener() {
-                        @Override
-                        public void onRequestResult(String result) {
-                            onMessageSentResult(result);
-                        }
-
-                        @Override
-                        public void onRequestError(int errorStringID) {
-
-                        }
-                    });
-                    mSocketRequestTask.execute(prepareSendMessageRequestString(mChannel, messageText));
+                    //mRequestTask.execute(prepareSendMessageRequestString(mChannel, messageText));
                 }
                 break;
         }

@@ -1,5 +1,7 @@
 package com.technopark.bulat.advandroidhomework2.models;
 
+import java.util.Date;
+
 /**
  * Created by bulat on 08.11.15.
  */
@@ -8,29 +10,18 @@ public class Message {
     private String authorId;
     private String authorNickname;
     private String text;
-    private String time;
+    private Date time;
+    private String channelId;
 
-    public String getTime() {
+    public Date getTime() {
         return time;
     }
 
-    public void setTime(String time) {
-        this.time = time;
-    }
-
-    public Message() {
-    }
-
-    public Message(String id, String authorId, String authorNickname, String text, String time) {
-        this.id = id;
-        this.authorId = authorId;
-        this.authorNickname = authorNickname;
-        this.text = text;
+    public void setTime(Date time) {
         this.time = time;
     }
 
     public String getAuthorNickname() {
-
         return authorNickname;
     }
 
@@ -60,5 +51,13 @@ public class Message {
 
     public void setText(String text) {
         this.text = text;
+    }
+
+    public String getChannelId() {
+        return channelId;
+    }
+
+    public void setChannelId(String channelId) {
+        this.channelId = channelId;
     }
 }

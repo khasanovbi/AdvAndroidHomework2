@@ -27,7 +27,7 @@
         </activity>
 
         <service
-            android:name=".services.ChatService"
+            android:name=".services.SocketService"
             android:exported="false" />
     </application>
 

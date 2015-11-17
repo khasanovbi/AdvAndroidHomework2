@@ -7,7 +7,7 @@ import java.io.Serializable;
  */
 public class Channel implements Serializable {
     public static final String descriptionKey = "Channel";
-    private String chid;
+    private String id;
     private String image;
     private String name;
     private String description;
@@ -23,12 +23,12 @@ public class Channel implements Serializable {
         this.onlineCount = onlineCount;
     }
 
-    public String getChid() {
-        return chid;
+    public String getId() {
+        return id;
     }
 
-    public void setChid(String chid) {
-        this.chid = chid;
+    public void setId(String id) {
+        this.id = id;
     }
 
     public String getImage() {

@@ -1,7 +1,7 @@
-package com.technopark.bulat.advandroidhomework2.socket;
+package com.technopark.bulat.advandroidhomework2.network.request;
 
 /**
- * Created by bulat on 05.11.15.
+ * Created by bulat on 17.11.15.
  */
 public interface RequestListener {
     void onRequestResult(String result);

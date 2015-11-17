@@ -10,27 +10,16 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.widget.EditText;
-import android.widget.Toast;
 
 import com.technopark.bulat.advandroidhomework2.R;
-import com.technopark.bulat.advandroidhomework2.models.GlobalUserIds;
-import com.technopark.bulat.advandroidhomework2.socket.RequestListener;
-import com.technopark.bulat.advandroidhomework2.socket.SocketRequestTask;
-
-import org.json.JSONException;
-import org.json.JSONObject;
-
-import java.util.HashMap;
-import java.util.Map;
 
 /**
  * A simple {@link Fragment} subclass.
  */
-public class LoginFragment extends Fragment implements OnClickListener, RequestListener {
+public class LoginFragment extends Fragment implements OnClickListener {
     private SharedPreferences sharedPreferences;
     private EditText mLoginEditText;
     private EditText mPasswordEditText;
-    private SocketRequestTask socketRequestTask;
     public LoginFragment() {
         // Required empty public constructor
     }
@@ -61,31 +50,12 @@ public class LoginFragment extends Fragment implements OnClickListener, RequestL
                 sharedPreferencesEditor.putString("login", login);
                 sharedPreferencesEditor.putString("password", password);
                 sharedPreferencesEditor.apply();
-                if (socketRequestTask != null) {
-                    socketRequestTask.cancel(true);
-                }
-                socketRequestTask = new SocketRequestTask(this);
-                socketRequestTask.execute(prepareLoginRequestString(login, password));
+                //requestTask.execute(prepareLoginRequestString(login, password));
             }
         }
     }
 
-    public static String prepareLoginRequestString(String login, String password) {
-        Map<String, String> data = new HashMap<>();
-        data.put("login", login);
-        data.put("pass", password);
-
-        JSONObject jsonObject = new JSONObject();
-        try {
-            jsonObject.put("action", "auth");
-            jsonObject.put("data", new JSONObject(data));
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
-        return jsonObject.toString();
-    }
-
-    @Override
+    /*
     public void onRequestResult(String result) {
         try {
             JSONObject jsonObject = new JSONObject(result);
@@ -103,9 +73,5 @@ public class LoginFragment extends Fragment implements OnClickListener, RequestL
             e.printStackTrace();
         }
     }
-
-    @Override
-    public void onRequestError(int errorStringID) {
-
-    }
+    */
 }

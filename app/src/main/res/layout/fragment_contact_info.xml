@@ -8,7 +8,7 @@
         android:id="@+id/contact_info_image"
         android:layout_width="192dp"
         android:layout_height="192dp"
-        android:src="@mipmap/ic_launcher"
+        android:src="@drawable/splash_screen_image"
         android:layout_centerHorizontal="true"
         android:layout_marginTop="32dp"
         />

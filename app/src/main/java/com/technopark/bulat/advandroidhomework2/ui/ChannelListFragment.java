@@ -15,23 +15,16 @@ import android.widget.Toast;
 
 import com.technopark.bulat.advandroidhomework2.R;
 import com.technopark.bulat.advandroidhomework2.adapters.ChannelListAdapter;
-
-import java.util.HashMap;
-import java.util.Map;
-
 import com.technopark.bulat.advandroidhomework2.models.Channel;
 import com.technopark.bulat.advandroidhomework2.models.GlobalUserIds;
-import com.technopark.bulat.advandroidhomework2.socket.RequestListener;
-import com.technopark.bulat.advandroidhomework2.socket.SocketRequestTask;
+import com.technopark.bulat.advandroidhomework2.network.request.messages.ChannelList;
+import com.technopark.bulat.advandroidhomework2.network.response.ResponseMessage;
+import com.technopark.bulat.advandroidhomework2.network.socket.GlobalSocket;
+import com.technopark.bulat.advandroidhomework2.network.socket.socketObserver.Observer;
 
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
-
-public class ChannelListFragment extends Fragment implements RequestListener, ChannelListAdapter.OnItemClickListener {
+public class ChannelListFragment extends Fragment implements ChannelListAdapter.OnItemClickListener, Observer {
     private RecyclerView mChannelListRecyclerView;
     private ChannelListAdapter mChannelListAdapter;
-    private SocketRequestTask mSocketRequestTask;
 
     public ChannelListFragment() {
         // Required empty public constructor
@@ -42,12 +35,9 @@ public class ChannelListFragment extends Fragment implements RequestListener, Ch
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         ((MainActivity) getActivity()).unsetFullScreenFlag();
-        if (mSocketRequestTask != null) {
-            mSocketRequestTask.cancel(true);
-        }
-        mSocketRequestTask = new SocketRequestTask(this);
-        mSocketRequestTask.execute(prepareChannelListRequestString());
-
+        GlobalSocket.getInstance().performAsyncRequest(new ChannelList(GlobalUserIds.getInstance().cid, GlobalUserIds.getInstance().sid));
+        //mRequestTask.execute(prepareChannelListRequestString());
+        GlobalSocket.getInstance().registerObserver(this);
         View rootView = inflater.inflate(R.layout.fragment_channel_list, container, false);
         mChannelListRecyclerView = (RecyclerView) rootView.findViewById(R.id.channel_list_recycler_view);
         mChannelListAdapter = new ChannelListAdapter();
@@ -59,52 +49,6 @@ public class ChannelListFragment extends Fragment implements RequestListener, Ch
         mChannelListRecyclerView.setLayoutManager(linearLayoutManager);
         mChannelListRecyclerView.setItemAnimator(itemAnimator);
         return rootView;
-    }
-
-    public static String prepareChannelListRequestString() {
-        Map<String, String> data = new HashMap<>();
-        data.put("cid", GlobalUserIds.getInstance().cid);
-        data.put("sid", GlobalUserIds.getInstance().sid);
-
-        JSONObject jsonObject = new JSONObject();
-        try {
-            jsonObject.put("action", "channellist");
-            jsonObject.put("data", new JSONObject(data));
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
-        return jsonObject.toString();
-    }
-
-    @Override
-    public void onRequestResult(String result) {
-        try {
-            JSONObject jsonObject = new JSONObject(result);
-            JSONObject data = jsonObject.getJSONObject("data");
-            int status = Integer.valueOf(data.getString("status"));
-            if (status != 0) {
-                Toast.makeText(getActivity(), data.getString("error"), Toast.LENGTH_SHORT).show();
-            } else {
-                JSONArray channels = data.getJSONArray("channels");
-                for (int i = 0; i < channels.length(); ++i) {
-                    JSONObject jsonChannel = (JSONObject) channels.get(i);
-                    Channel channel = new Channel();
-                    channel.setChid(jsonChannel.getString("chid"));
-                    channel.setDescription(jsonChannel.getString("descr"));
-                    channel.setName(jsonChannel.getString("name"));
-                    channel.setOnlineCount(jsonChannel.getInt("online"));
-                    mChannelListAdapter.add(channel);
-                }
-            }
-
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
-    }
-
-    @Override
-    public void onRequestError(int errorStringID) {
-
     }
 
     @Override
@@ -120,5 +64,29 @@ public class ChannelListFragment extends Fragment implements RequestListener, Ch
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         super.onCreateOptionsMenu(menu, inflater);
+    }
+
+    @Override
+    public void handleResponseMessage(ResponseMessage responseMessage) {
+        if (responseMessage.getAction().equals("channellist")) {
+            final com.technopark.bulat.advandroidhomework2.network.response.messages.ChannelList channelList = new com.technopark.bulat.advandroidhomework2.network.response.messages.ChannelList();
+            channelList.parse(responseMessage.getJsonData());
+            int status = channelList.getStatus();
+            if (status == 0) {
+                getActivity().runOnUiThread(new Runnable() {
+                    public void run() {
+                        for (Channel channel : channelList.getChannels()) {
+                            mChannelListAdapter.add(channel);
+                        }
+                    }
+                });
+            } else {
+                getActivity().runOnUiThread(new Runnable() {
+                    public void run() {
+                        Toast.makeText(getActivity().getBaseContext(), channelList.getError(), Toast.LENGTH_LONG).show();
+                    }
+                });
+            }
+        }
     }
 }

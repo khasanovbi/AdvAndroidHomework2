@@ -4,19 +4,23 @@ package com.technopark.bulat.advandroidhomework2.models;
  * Created by bulat on 08.11.15.
  */
 public class User {
+    private String id;
     private String nickname;
     private String password;
     private String email;
     private String status;
     private String image;
 
-    public User(String nickname, String email, String status, String image) {
-        this.nickname = nickname;
-        this.password = password;
-        this.email = email;
-        this.status = status;
-        this.image = image;
+    public User() {}
+
+    public String getId() {
+        return id;
     }
+
+    public void setId(String id) {
+        this.id = id;
+    }
+
 
     public String getNickname() {
         return nickname;

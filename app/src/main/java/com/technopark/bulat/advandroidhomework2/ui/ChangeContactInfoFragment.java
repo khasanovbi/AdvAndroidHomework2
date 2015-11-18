@@ -4,16 +4,23 @@ package com.technopark.bulat.advandroidhomework2.ui;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
 
 import com.technopark.bulat.advandroidhomework2.R;
+import com.technopark.bulat.advandroidhomework2.models.GlobalUserIds;
+import com.technopark.bulat.advandroidhomework2.network.request.messages.ChannelList;
+import com.technopark.bulat.advandroidhomework2.network.response.ResponseMessage;
+import com.technopark.bulat.advandroidhomework2.network.socket.GlobalSocket;
+import com.technopark.bulat.advandroidhomework2.network.socket.socketObserver.Observer;
 
 /**
  * A simple {@link Fragment} subclass.
  */
-public class ChangeContactInfoFragment extends Fragment {
+public class ChangeContactInfoFragment extends Fragment implements Observer {
 
 
     public ChangeContactInfoFragment() {
@@ -29,5 +36,22 @@ public class ChangeContactInfoFragment extends Fragment {
         return inflater.inflate(R.layout.fragment_change_contact_info, container, false);
     }
 
+    @Override
+    public void onResume() {
+        super.onResume();
+        /* Subscribe to socket messages */
+        GlobalSocket.getInstance().registerObserver(this);
+    }
 
+    @Override
+    public void onPause() {
+        super.onPause();
+        /* Unsubscribe from socket messages */
+        GlobalSocket.getInstance().removeObserver(this);
+    }
+
+    @Override
+    public void handleResponseMessage(ResponseMessage responseMessage) {
+
+    }
 }

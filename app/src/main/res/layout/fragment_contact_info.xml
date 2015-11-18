@@ -8,9 +8,31 @@
         android:id="@+id/contact_info_image"
         android:layout_width="192dp"
         android:layout_height="192dp"
-        android:src="@drawable/splash_screen_image"
         android:layout_centerHorizontal="true"
         android:layout_marginTop="32dp"
-        />
+        android:src="@drawable/splash_screen_image" />
 
+    <TextView
+        android:id="@+id/contact_info_nickname"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignLeft="@+id/contact_info_image"
+        android:layout_alignStart="@+id/contact_info_image"
+        android:layout_below="@+id/contact_info_image"
+        android:layout_marginTop="32dp"
+        android:text="@string/nickname"
+        android:textColor="@android:color/black"
+        android:textSize="18sp" />
+
+    <TextView
+        android:id="@+id/contact_info_status"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignLeft="@+id/contact_info_nickname"
+        android:layout_alignStart="@+id/contact_info_nickname"
+        android:layout_below="@+id/contact_info_nickname"
+        android:layout_marginTop="8dp"
+        android:text="@string/status"
+        android:textColor="@android:color/black"
+        android:textSize="18sp" />
 </RelativeLayout>

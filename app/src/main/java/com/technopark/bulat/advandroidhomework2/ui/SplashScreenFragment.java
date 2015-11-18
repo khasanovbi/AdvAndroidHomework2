@@ -24,8 +24,15 @@ public class SplashScreenFragment extends Fragment implements OnPreloadTaskDone,
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        /* Try get credentials from sharedPreferences */
+        return inflater.inflate(R.layout.fragment_splash_screen, container, false);
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        /* Subscribe to socket messages */
         GlobalSocket.getInstance().registerObserver(this);
+        /* Try get credentials from sharedPreferences */
         SharedPreferences sharedPreferences = getActivity().getSharedPreferences("auth_settings", Context.MODE_PRIVATE);
         String login = sharedPreferences.getString("login", null);
         String password = sharedPreferences.getString("password", null);
@@ -38,21 +45,20 @@ public class SplashScreenFragment extends Fragment implements OnPreloadTaskDone,
             mPreloadTask = new PreloadTask(SplashScreenFragment.this);
             mPreloadTask.execute();
         }
-
-        return inflater.inflate(R.layout.fragment_splash_screen, container, false);
     }
 
     @Override
-    public void onStop() {
-        super.onStop();
+    public void onPause() {
+        super.onPause();
         if (mPreloadTask != null) {
             mPreloadTask.cancel(true);
         }
+        GlobalSocket.getInstance().removeObserver(this);
     }
 
     @Override
     public void onPreloadTaskDone() {
-        getActivity().getSupportFragmentManager().beginTransaction().replace(R.id.fragments_container, new RegisterFragment()).commit();
+        getActivity().getSupportFragmentManager().beginTransaction().replace(R.id.fragments_container, new LoginFragment()).commit();
     }
 
     @Override
@@ -64,7 +70,6 @@ public class SplashScreenFragment extends Fragment implements OnPreloadTaskDone,
             if (status == 0) {
                 GlobalUserIds.getInstance().cid = auth.getCid();
                 GlobalUserIds.getInstance().sid = auth.getSid();
-                GlobalSocket.getInstance().removeObserver(this);
                 getActivity().getSupportFragmentManager().beginTransaction().replace(R.id.fragments_container, new ChannelListFragment()).commit();
             } else {
                 getActivity().runOnUiThread(new Runnable() {
@@ -72,7 +77,6 @@ public class SplashScreenFragment extends Fragment implements OnPreloadTaskDone,
                         Toast.makeText(getActivity().getBaseContext(), auth.getError(), Toast.LENGTH_LONG).show();
                     }
                 });
-                GlobalSocket.getInstance().removeObserver(this);
                 switch (status) {
                     case 7:
                         getActivity().getSupportFragmentManager().beginTransaction().replace(R.id.fragments_container, new RegisterFragment()).commit();

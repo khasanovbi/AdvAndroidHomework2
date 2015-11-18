@@ -78,6 +78,10 @@ public class ChatAdapter extends RecyclerView.Adapter<ChatAdapter.MessageViewHol
         notifyItemInserted(getItemCount());
     }
 
+    public List<Message> getMessages() {
+        return messages;
+    }
+
     public class MessageViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
         private TextView mMessageText;
         private TextView mMessageAuthor;

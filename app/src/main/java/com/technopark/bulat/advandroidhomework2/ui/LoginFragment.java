@@ -10,16 +10,23 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.widget.EditText;
+import android.widget.Toast;
 
 import com.technopark.bulat.advandroidhomework2.R;
+import com.technopark.bulat.advandroidhomework2.models.GlobalUserIds;
+import com.technopark.bulat.advandroidhomework2.network.request.messages.Auth;
+import com.technopark.bulat.advandroidhomework2.network.response.ResponseMessage;
+import com.technopark.bulat.advandroidhomework2.network.socket.GlobalSocket;
+import com.technopark.bulat.advandroidhomework2.network.socket.socketObserver.Observer;
 
 /**
  * A simple {@link Fragment} subclass.
  */
-public class LoginFragment extends Fragment implements OnClickListener {
-    private SharedPreferences sharedPreferences;
+public class LoginFragment extends Fragment implements OnClickListener, Observer {
+    private SharedPreferences mSharedPreferences;
     private EditText mLoginEditText;
     private EditText mPasswordEditText;
+
     public LoginFragment() {
         // Required empty public constructor
     }
@@ -31,9 +38,9 @@ public class LoginFragment extends Fragment implements OnClickListener {
 
         mLoginEditText = (EditText) rootView.findViewById(R.id.login_edit_text);
         mPasswordEditText = (EditText) rootView.findViewById(R.id.password_edit_text);
-        sharedPreferences = getActivity().getSharedPreferences("auth_settings", Context.MODE_PRIVATE);
-        mLoginEditText.setText(sharedPreferences.getString("login", ""));
-        mPasswordEditText.setText(sharedPreferences.getString("password", ""));
+        mSharedPreferences = getActivity().getSharedPreferences("auth_settings", Context.MODE_PRIVATE);
+        mLoginEditText.setText(mSharedPreferences.getString("login", ""));
+        mPasswordEditText.setText(mSharedPreferences.getString("password", ""));
 
         rootView.findViewById(R.id.login_button).setOnClickListener(this);
         return rootView;
@@ -44,34 +51,56 @@ public class LoginFragment extends Fragment implements OnClickListener {
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.login_button: {
-                Editor sharedPreferencesEditor = sharedPreferences.edit();
+                Editor sharedPreferencesEditor = mSharedPreferences.edit();
                 String login = mLoginEditText.getText().toString();
                 String password = mPasswordEditText.getText().toString();
                 sharedPreferencesEditor.putString("login", login);
                 sharedPreferencesEditor.putString("password", password);
                 sharedPreferencesEditor.apply();
-                //requestTask.execute(prepareLoginRequestString(login, password));
+                GlobalSocket.getInstance().performAsyncRequest(new Auth(login, password));
             }
         }
     }
 
-    /*
-    public void onRequestResult(String result) {
-        try {
-            JSONObject jsonObject = new JSONObject(result);
-            JSONObject data = jsonObject.getJSONObject("data");
-            int status = Integer.valueOf(data.getString("status"));
-            if (status != 0) {
-                Toast.makeText(getActivity(), data.getString("error"), Toast.LENGTH_SHORT).show();
-            } else {
-                GlobalUserIds.getInstance().cid = data.getString("cid");
-                GlobalUserIds.getInstance().sid = data.getString("sid");
+    @Override
+    public void onResume() {
+        super.onResume();
+        /* Subscribe to socket messages */
+        GlobalSocket.getInstance().registerObserver(this);
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        /* Unsubscribe from socket messages */
+        GlobalSocket.getInstance().removeObserver(this);
+    }
+
+    @Override
+    public void handleResponseMessage(ResponseMessage responseMessage) {
+        if (responseMessage.getAction().equals("auth")) {
+            final com.technopark.bulat.advandroidhomework2.network.response.messages.Auth auth = new com.technopark.bulat.advandroidhomework2.network.response.messages.Auth();
+            auth.parse(responseMessage.getJsonData());
+            int status = auth.getStatus();
+            if (status == 0) {
+                GlobalUserIds.getInstance().cid = auth.getCid();
+                GlobalUserIds.getInstance().sid = auth.getSid();
                 getActivity().getSupportFragmentManager().beginTransaction().replace(R.id.fragments_container, new ChannelListFragment()).commit();
+            } else {
+                getActivity().runOnUiThread(new Runnable() {
+                    public void run() {
+                        Toast.makeText(getActivity().getBaseContext(), auth.getError(), Toast.LENGTH_LONG).show();
+                    }
+                });
+                switch (status) {
+                    case 7:
+                        getActivity().getSupportFragmentManager().beginTransaction().replace(R.id.fragments_container, new RegisterFragment()).commit();
+                        break;
+                    default:
+                        getActivity().getSupportFragmentManager().beginTransaction().replace(R.id.fragments_container, new LoginFragment()).commit();
+                        break;
+                }
             }
-
-        } catch (JSONException e) {
-            e.printStackTrace();
         }
     }
-    */
 }

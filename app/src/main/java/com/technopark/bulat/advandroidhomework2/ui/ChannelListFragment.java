@@ -3,6 +3,7 @@ package com.technopark.bulat.advandroidhomework2.ui;
 
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -30,13 +31,11 @@ public class ChannelListFragment extends Fragment implements ChannelListAdapter.
         // Required empty public constructor
     }
 
-
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         ((MainActivity) getActivity()).unsetFullScreenFlag();
-        GlobalSocket.getInstance().registerObserver(this);
-        GlobalSocket.getInstance().performAsyncRequest(new ChannelList(GlobalUserIds.getInstance().cid, GlobalUserIds.getInstance().sid));
+
         View rootView = inflater.inflate(R.layout.fragment_channel_list, container, false);
         mChannelListRecyclerView = (RecyclerView) rootView.findViewById(R.id.channel_list_recycler_view);
         mChannelListAdapter = new ChannelListAdapter();
@@ -57,7 +56,24 @@ public class ChannelListFragment extends Fragment implements ChannelListAdapter.
         Bundle bundle = new Bundle();
         bundle.putSerializable(Channel.descriptionKey, channel);
         chatFragment.setArguments(bundle);
-        getActivity().getSupportFragmentManager().beginTransaction().replace(R.id.fragments_container, chatFragment).commit();
+        FragmentTransaction transaction = getActivity().getSupportFragmentManager().beginTransaction();
+        transaction.addToBackStack(null);
+        transaction.replace(R.id.fragments_container, chatFragment).commit();
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        /* Subscribe to socket messages */
+        GlobalSocket.getInstance().registerObserver(this);
+        GlobalSocket.getInstance().performAsyncRequest(new ChannelList(GlobalUserIds.getInstance().cid, GlobalUserIds.getInstance().sid));
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        /* Unsubscribe from socket messages */
+        GlobalSocket.getInstance().removeObserver(this);
     }
 
     @Override

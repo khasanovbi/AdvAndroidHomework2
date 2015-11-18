@@ -5,7 +5,6 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -13,6 +12,7 @@ import android.widget.EditText;
 import android.widget.Toast;
 
 import com.technopark.bulat.advandroidhomework2.R;
+import com.technopark.bulat.advandroidhomework2.models.GlobalUserIds;
 import com.technopark.bulat.advandroidhomework2.network.request.messages.Auth;
 import com.technopark.bulat.advandroidhomework2.network.request.messages.Registration;
 import com.technopark.bulat.advandroidhomework2.network.response.ResponseMessage;
@@ -23,64 +23,93 @@ import com.technopark.bulat.advandroidhomework2.network.socket.socketObserver.Ob
  * A simple {@link Fragment} subclass.
  */
 public class RegisterFragment extends Fragment implements View.OnClickListener, Observer {
-    private SharedPreferences sharedPreferences;
+    private SharedPreferences mSharedPreferences;
     private EditText mLoginEditText;
     private EditText mPasswordEditText;
     private EditText mNicknameEditText;
-
+    private String mLogin;
+    private String mPassword;
     public RegisterFragment() {
         // Required empty public constructor
     }
 
-
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
-        GlobalSocket.getInstance().registerObserver(this);
         View rootView = inflater.inflate(R.layout.fragment_register, container, false);
         mLoginEditText = (EditText) rootView.findViewById(R.id.login_edit_text);
         mPasswordEditText = (EditText) rootView.findViewById(R.id.password_edit_text);
         mNicknameEditText = (EditText) rootView.findViewById(R.id.nickname_edit_text);
 
-        sharedPreferences = getActivity().getSharedPreferences("auth_settings", Context.MODE_PRIVATE);
-        mLoginEditText.setText(sharedPreferences.getString("login", ""));
-        mPasswordEditText.setText(sharedPreferences.getString("password", ""));
-        mNicknameEditText.setText(sharedPreferences.getString("nickname", ""));
+        mSharedPreferences = getActivity().getSharedPreferences("auth_settings", Context.MODE_PRIVATE);
+        mLoginEditText.setText(mSharedPreferences.getString("login", ""));
+        mPasswordEditText.setText(mSharedPreferences.getString("password", ""));
+        mNicknameEditText.setText(mSharedPreferences.getString("nickname", ""));
 
         rootView.findViewById(R.id.register_button).setOnClickListener(this);
         return rootView;
+    }
+
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        /* Subscribe to socket messages */
+        GlobalSocket.getInstance().registerObserver(this);
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        /* Unsubscribe from socket messages */
+        GlobalSocket.getInstance().removeObserver(this);
     }
 
     @Override
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.register_button: {
-                SharedPreferences.Editor sharedPreferencesEditor = sharedPreferences.edit();
-                String login = mLoginEditText.getText().toString();
-                String password = mPasswordEditText.getText().toString();
+                SharedPreferences.Editor sharedPreferencesEditor = mSharedPreferences.edit();
+                mLogin = mLoginEditText.getText().toString();
+                mPassword = mPasswordEditText.getText().toString();
                 String nickname = mNicknameEditText.getText().toString();
-                sharedPreferencesEditor.putString("login", login);
-                sharedPreferencesEditor.putString("password", password);
+                sharedPreferencesEditor.putString("login", mLogin);
+                sharedPreferencesEditor.putString("password", mPassword);
                 sharedPreferencesEditor.putString("nickname", nickname);
                 sharedPreferencesEditor.apply();
-                GlobalSocket.getInstance().performAsyncRequest(new Registration(login, password, nickname));
+                GlobalSocket.getInstance().performAsyncRequest(new Registration(mLogin, mPassword, nickname));
             }
         }
     }
 
     @Override
     public void handleResponseMessage(ResponseMessage responseMessage) {
-        if (responseMessage.getAction().equals("register")) {
+        String action = responseMessage.getAction();
+        if (action.equals("register")) {
             final com.technopark.bulat.advandroidhomework2.network.response.messages.Registration registration = new com.technopark.bulat.advandroidhomework2.network.response.messages.Registration();
             registration.parse(responseMessage.getJsonData());
             if (registration.getStatus() == 0) {
-                GlobalSocket.getInstance().removeObserver(this);
+                GlobalSocket.getInstance().performAsyncRequest(new Auth(mLogin, mPassword));
                 getActivity().getSupportFragmentManager().beginTransaction().replace(R.id.fragments_container, new ChannelListFragment()).commit();
             } else {
                 getActivity().runOnUiThread(new Runnable() {
                     public void run() {
                         Toast.makeText(getActivity().getBaseContext(), registration.getError(), Toast.LENGTH_LONG).show();
+                    }
+                });
+            }
+        } else if (action.equals("auth")) {
+            final com.technopark.bulat.advandroidhomework2.network.response.messages.Auth auth = new com.technopark.bulat.advandroidhomework2.network.response.messages.Auth();
+            auth.parse(responseMessage.getJsonData());
+            int status = auth.getStatus();
+            if (status == 0) {
+                GlobalUserIds.getInstance().cid = auth.getCid();
+                GlobalUserIds.getInstance().sid = auth.getSid();
+                getActivity().getSupportFragmentManager().beginTransaction().replace(R.id.fragments_container, new ChannelListFragment()).commit();
+            } else {
+                getActivity().runOnUiThread(new Runnable() {
+                    public void run() {
+                        Toast.makeText(getActivity().getBaseContext(), auth.getError(), Toast.LENGTH_LONG).show();
                     }
                 });
             }

@@ -15,7 +15,9 @@ import com.technopark.bulat.advandroidhomework2.R;
 import com.technopark.bulat.advandroidhomework2.models.GlobalUserIds;
 import com.technopark.bulat.advandroidhomework2.network.request.messages.Auth;
 import com.technopark.bulat.advandroidhomework2.network.request.messages.Registration;
-import com.technopark.bulat.advandroidhomework2.network.response.ResponseMessage;
+import com.technopark.bulat.advandroidhomework2.network.response.RawResponse;
+import com.technopark.bulat.advandroidhomework2.network.response.messages.AuthResponse;
+import com.technopark.bulat.advandroidhomework2.network.response.messages.RegistrationResponse;
 import com.technopark.bulat.advandroidhomework2.network.socket.GlobalSocket;
 import com.technopark.bulat.advandroidhomework2.network.socket.socketObserver.Observer;
 
@@ -83,29 +85,30 @@ public class RegisterFragment extends Fragment implements View.OnClickListener, 
     }
 
     @Override
-    public void handleResponseMessage(ResponseMessage responseMessage) {
-        String action = responseMessage.getAction();
+    public void handleResponseMessage(RawResponse rawResponse) {
+        String action = rawResponse.getAction();
         if (action.equals("register")) {
-            final com.technopark.bulat.advandroidhomework2.network.response.messages.Registration registration = new com.technopark.bulat.advandroidhomework2.network.response.messages.Registration();
-            registration.parse(responseMessage.getJsonData());
-            if (registration.getStatus() == 0) {
+            final RegistrationResponse registrationResponse = new RegistrationResponse(rawResponse.getJsonData());
+            if (registrationResponse.getStatus() == 0) {
                 GlobalSocket.getInstance().performAsyncRequest(new Auth(mLogin, mPassword));
-                getActivity().getSupportFragmentManager().beginTransaction().replace(R.id.fragments_container, new ChannelListFragment()).commit();
             } else {
                 getActivity().runOnUiThread(new Runnable() {
                     public void run() {
-                        Toast.makeText(getActivity().getBaseContext(), registration.getError(), Toast.LENGTH_LONG).show();
+                        Toast.makeText(getActivity().getBaseContext(), registrationResponse.getError(), Toast.LENGTH_LONG).show();
                     }
                 });
             }
         } else if (action.equals("auth")) {
-            final com.technopark.bulat.advandroidhomework2.network.response.messages.Auth auth = new com.technopark.bulat.advandroidhomework2.network.response.messages.Auth();
-            auth.parse(responseMessage.getJsonData());
+            final AuthResponse auth = new AuthResponse(rawResponse.getJsonData());
             int status = auth.getStatus();
             if (status == 0) {
                 GlobalUserIds.getInstance().cid = auth.getCid();
                 GlobalUserIds.getInstance().sid = auth.getSid();
-                getActivity().getSupportFragmentManager().beginTransaction().replace(R.id.fragments_container, new ChannelListFragment()).commit();
+                Fragment channelListFragment = getActivity().getSupportFragmentManager().findFragmentById(R.id.fragment_channel_list);
+                if (channelListFragment == null) {
+                    channelListFragment = new ChannelListFragment();
+                }
+                getActivity().getSupportFragmentManager().beginTransaction().replace(R.id.fragments_container, channelListFragment).commit();
             } else {
                 getActivity().runOnUiThread(new Runnable() {
                     public void run() {

@@ -2,8 +2,6 @@ package com.technopark.bulat.advandroidhomework2.network.response.messages;
 
 import android.util.Log;
 
-import com.technopark.bulat.advandroidhomework2.network.response.ResponseMessage;
-
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -12,12 +10,12 @@ import java.util.Date;
 /**
  * Created by bulat on 13.11.15.
  */
-public class Welcome {
+public class WelcomeResponse {
     private static final String LOG_TAG = "Message: welcome";
     private String message;
     private long time;
 
-    public void parse(JSONObject jsonData) {
+    public WelcomeResponse(JSONObject jsonData) {
         try {
             message = jsonData.getString("message");
             time = jsonData.getLong("time");

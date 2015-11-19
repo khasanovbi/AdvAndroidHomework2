@@ -1,7 +1,6 @@
 package com.technopark.bulat.advandroidhomework2.adapters;
 
 import android.support.v7.widget.RecyclerView;
-import android.text.Html;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -20,7 +19,8 @@ import java.util.List;
  */
 public class ChatAdapter extends RecyclerView.Adapter<ChatAdapter.MessageViewHolder> {
     private List<Message> messages;
-    private final static int ANOTHER_USER = 0, CURRENT_USER = 1;
+    private final static int ANOTHER_USER = 0;
+    private final static int CURRENT_USER = 1;
     private OnItemClickListener onItemClickListener;
 
     public ChatAdapter() {

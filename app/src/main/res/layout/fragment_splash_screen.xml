@@ -5,10 +5,10 @@
     tools:context="com.technopark.bulat.advandroidhomework2.ui.SplashScreenFragment">
 
     <ImageView
+        android:id="@+id/imageView"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:layout_gravity="center"
         android:scaleType="fitCenter"
-        android:src="@drawable/splash_screen_image"
-        android:id="@+id/imageView"
-        android:layout_gravity="center" />
+        android:src="@drawable/splash_screen_image" />
 </FrameLayout>

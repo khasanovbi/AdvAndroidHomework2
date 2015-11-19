@@ -3,18 +3,8 @@ package com.technopark.bulat.advandroidhomework2.network.socket;
 import android.util.Log;
 
 import com.technopark.bulat.advandroidhomework2.network.request.RequestMessage;
-import com.technopark.bulat.advandroidhomework2.network.response.ResponseMessage;
-import com.technopark.bulat.advandroidhomework2.network.response.events.EnterEvent;
-import com.technopark.bulat.advandroidhomework2.network.response.events.LeaveEvent;
-import com.technopark.bulat.advandroidhomework2.network.response.events.MessageEvent;
-import com.technopark.bulat.advandroidhomework2.network.response.messages.Auth;
-import com.technopark.bulat.advandroidhomework2.network.response.messages.ChannelList;
-import com.technopark.bulat.advandroidhomework2.network.response.messages.EnterChat;
-import com.technopark.bulat.advandroidhomework2.network.response.messages.LeaveChat;
-import com.technopark.bulat.advandroidhomework2.network.response.messages.Registration;
-import com.technopark.bulat.advandroidhomework2.network.response.messages.SendMessage;
-import com.technopark.bulat.advandroidhomework2.network.response.messages.UserInfo;
-import com.technopark.bulat.advandroidhomework2.network.response.messages.Welcome;
+import com.technopark.bulat.advandroidhomework2.network.response.RawResponse;
+import com.technopark.bulat.advandroidhomework2.network.response.messages.WelcomeResponse;
 import com.technopark.bulat.advandroidhomework2.network.socket.socketObserver.Observable;
 import com.technopark.bulat.advandroidhomework2.network.socket.socketObserver.Observer;
 
@@ -30,9 +20,7 @@ import java.net.Socket;
 import java.net.SocketTimeoutException;
 import java.nio.charset.Charset;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 /**
  * Created by bulat on 11.11.15.
@@ -70,9 +58,9 @@ public class GlobalSocket implements SocketParams, Observable {
     }
 
     @Override
-    public void notifyObservers(ResponseMessage responseMessage) {
+    public void notifyObservers(RawResponse rawResponse) {
         for (Observer observer : observers) {
-            observer.handleResponseMessage(responseMessage);
+            observer.handleResponseMessage(rawResponse);
         }
     }
 
@@ -85,7 +73,7 @@ public class GlobalSocket implements SocketParams, Observable {
             public void run() {
                 while (true) {
                     // Log.d(LOG_TAG, "AsyncThreadRun");
-                    String responseString = null;
+                    String responseString;
                     try {
                         Thread.sleep(SOCKET_CHECK_TIME);
                     } catch (InterruptedException e) {
@@ -98,9 +86,9 @@ public class GlobalSocket implements SocketParams, Observable {
                             while (responseString.length() > 0) {
                                 JSONObject splitResponseJson =  new JSONObject(responseString);
                                 int splitResponseStringLength = splitResponseJson.toString().length();
-                                ResponseMessage responseMessage = getResponseMessage(splitResponseJson);
-                                if (responseMessage != null) {
-                                    notifyObservers(responseMessage);
+                                RawResponse rawResponse = getRawResponse(splitResponseJson);
+                                if (rawResponse != null) {
+                                    notifyObservers(rawResponse);
                                 }
                                 responseString = responseString.substring(splitResponseStringLength);
                             }
@@ -204,16 +192,15 @@ public class GlobalSocket implements SocketParams, Observable {
         (new Request(requestMessage)).start();
     }
 
-    public ResponseMessage getResponseMessage(JSONObject splitResponseJson) {
+    public RawResponse getRawResponse(JSONObject splitResponseJson) {
         try {
             String action = splitResponseJson.getString("action");
             JSONObject jsonData;
             if (!action.equals("welcome")) {
                 jsonData = splitResponseJson.getJSONObject("data");
-                return new ResponseMessage(action, jsonData);
+                return new RawResponse(action, jsonData);
             } else {
-                Welcome welcome = new Welcome();
-                welcome.parse(splitResponseJson);
+                WelcomeResponse welcomeResponse = new WelcomeResponse(splitResponseJson);
                 return null;
 
             }

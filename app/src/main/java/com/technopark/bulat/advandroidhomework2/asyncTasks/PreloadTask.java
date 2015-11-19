@@ -2,7 +2,6 @@ package com.technopark.bulat.advandroidhomework2.asyncTasks;
 
 import android.os.AsyncTask;
 
-
 import java.util.concurrent.TimeUnit;
 
 /**
@@ -10,7 +9,7 @@ import java.util.concurrent.TimeUnit;
  */
 public class PreloadTask extends AsyncTask<Void, Void, Void> {
     private OnPreloadTaskDone fragmentCallback;
-    private int sleepTime = 2;
+    private static final int SLEEP_TIME = 2;
 
     public PreloadTask(OnPreloadTaskDone fragmentCallback) {
         this.fragmentCallback = fragmentCallback;
@@ -19,8 +18,9 @@ public class PreloadTask extends AsyncTask<Void, Void, Void> {
     @Override
     protected Void doInBackground(Void... params) {
         try {
-            TimeUnit.SECONDS.sleep(sleepTime);
-        } catch (InterruptedException ignored) {}
+            TimeUnit.SECONDS.sleep(SLEEP_TIME);
+        } catch (InterruptedException ignored) {
+        }
         return null;
     }
 

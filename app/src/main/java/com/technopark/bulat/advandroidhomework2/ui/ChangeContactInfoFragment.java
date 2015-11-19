@@ -4,16 +4,12 @@ package com.technopark.bulat.advandroidhomework2.ui;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
-import android.view.Menu;
-import android.view.MenuInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
 
 import com.technopark.bulat.advandroidhomework2.R;
-import com.technopark.bulat.advandroidhomework2.models.GlobalUserIds;
-import com.technopark.bulat.advandroidhomework2.network.request.messages.ChannelList;
-import com.technopark.bulat.advandroidhomework2.network.response.ResponseMessage;
+import com.technopark.bulat.advandroidhomework2.network.response.RawResponse;
 import com.technopark.bulat.advandroidhomework2.network.socket.GlobalSocket;
 import com.technopark.bulat.advandroidhomework2.network.socket.socketObserver.Observer;
 
@@ -51,7 +47,7 @@ public class ChangeContactInfoFragment extends Fragment implements Observer {
     }
 
     @Override
-    public void handleResponseMessage(ResponseMessage responseMessage) {
+    public void handleResponseMessage(RawResponse rawResponse) {
 
     }
 }

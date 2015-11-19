@@ -3,7 +3,6 @@ package com.technopark.bulat.advandroidhomework2.network.response.messages;
 import android.util.Log;
 
 import com.technopark.bulat.advandroidhomework2.models.User;
-import com.technopark.bulat.advandroidhomework2.network.response.ResponseMessage;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -11,27 +10,14 @@ import org.json.JSONObject;
 /**
  * Created by bulat on 15.11.15.
  */
-public class UserInfo {
+public class UserInfoResponse {
     private static final String LOG_TAG = "Message: userInfo";
     private int status;
     private String error;
     private User user;
 
-    public int getStatus() {
-        return status;
-    }
-
-    public String getError() {
-        return error;
-    }
-
-    public User getUser() {
-        return user;
-    }
-
-    public void parse(JSONObject jsonData) {
+    public UserInfoResponse(JSONObject jsonData) {
         Log.d(LOG_TAG, jsonData.toString());
-
         try {
             status = jsonData.getInt("status");
             if (status == 0) {
@@ -44,5 +30,17 @@ public class UserInfo {
         } catch (JSONException e) {
             e.printStackTrace();
         }
+    }
+
+    public int getStatus() {
+        return status;
+    }
+
+    public String getError() {
+        return error;
+    }
+
+    public User getUser() {
+        return user;
     }
 }

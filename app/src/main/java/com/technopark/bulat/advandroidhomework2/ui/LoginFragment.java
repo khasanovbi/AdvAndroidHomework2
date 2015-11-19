@@ -15,7 +15,8 @@ import android.widget.Toast;
 import com.technopark.bulat.advandroidhomework2.R;
 import com.technopark.bulat.advandroidhomework2.models.GlobalUserIds;
 import com.technopark.bulat.advandroidhomework2.network.request.messages.Auth;
-import com.technopark.bulat.advandroidhomework2.network.response.ResponseMessage;
+import com.technopark.bulat.advandroidhomework2.network.response.RawResponse;
+import com.technopark.bulat.advandroidhomework2.network.response.messages.AuthResponse;
 import com.technopark.bulat.advandroidhomework2.network.socket.GlobalSocket;
 import com.technopark.bulat.advandroidhomework2.network.socket.socketObserver.Observer;
 
@@ -77,10 +78,9 @@ public class LoginFragment extends Fragment implements OnClickListener, Observer
     }
 
     @Override
-    public void handleResponseMessage(ResponseMessage responseMessage) {
-        if (responseMessage.getAction().equals("auth")) {
-            final com.technopark.bulat.advandroidhomework2.network.response.messages.Auth auth = new com.technopark.bulat.advandroidhomework2.network.response.messages.Auth();
-            auth.parse(responseMessage.getJsonData());
+    public void handleResponseMessage(RawResponse rawResponse) {
+        if (rawResponse.getAction().equals("auth")) {
+            final AuthResponse auth = new AuthResponse(rawResponse.getJsonData());
             int status = auth.getStatus();
             if (status == 0) {
                 GlobalUserIds.getInstance().cid = auth.getCid();

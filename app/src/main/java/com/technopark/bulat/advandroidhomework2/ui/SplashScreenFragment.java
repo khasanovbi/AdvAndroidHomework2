@@ -13,7 +13,8 @@ import com.technopark.bulat.advandroidhomework2.R;
 import com.technopark.bulat.advandroidhomework2.asyncTasks.OnPreloadTaskDone;
 import com.technopark.bulat.advandroidhomework2.asyncTasks.PreloadTask;
 import com.technopark.bulat.advandroidhomework2.models.GlobalUserIds;
-import com.technopark.bulat.advandroidhomework2.network.response.ResponseMessage;
+import com.technopark.bulat.advandroidhomework2.network.response.RawResponse;
+import com.technopark.bulat.advandroidhomework2.network.response.messages.AuthResponse;
 import com.technopark.bulat.advandroidhomework2.network.socket.GlobalSocket;
 import com.technopark.bulat.advandroidhomework2.network.request.messages.Auth;
 import com.technopark.bulat.advandroidhomework2.network.socket.socketObserver.Observer;
@@ -62,15 +63,18 @@ public class SplashScreenFragment extends Fragment implements OnPreloadTaskDone,
     }
 
     @Override
-    public void handleResponseMessage(ResponseMessage responseMessage) {
-        if (responseMessage.getAction().equals("auth")) {
-            final com.technopark.bulat.advandroidhomework2.network.response.messages.Auth auth = new com.technopark.bulat.advandroidhomework2.network.response.messages.Auth();
-            auth.parse(responseMessage.getJsonData());
+    public void handleResponseMessage(RawResponse rawResponse) {
+        if (rawResponse.getAction().equals("auth")) {
+            final AuthResponse auth = new AuthResponse(rawResponse.getJsonData());
             int status = auth.getStatus();
             if (status == 0) {
                 GlobalUserIds.getInstance().cid = auth.getCid();
                 GlobalUserIds.getInstance().sid = auth.getSid();
-                getActivity().getSupportFragmentManager().beginTransaction().replace(R.id.fragments_container, new ChannelListFragment()).commit();
+                Fragment channelListFragment = getActivity().getSupportFragmentManager().findFragmentById(R.id.fragment_channel_list);
+                if (channelListFragment == null) {
+                    channelListFragment = new ChannelListFragment();
+                }
+                getActivity().getSupportFragmentManager().beginTransaction().replace(R.id.fragments_container, channelListFragment).commit();
             } else {
                 getActivity().runOnUiThread(new Runnable() {
                     public void run() {
@@ -79,10 +83,18 @@ public class SplashScreenFragment extends Fragment implements OnPreloadTaskDone,
                 });
                 switch (status) {
                     case 7:
-                        getActivity().getSupportFragmentManager().beginTransaction().replace(R.id.fragments_container, new RegisterFragment()).commit();
+                        Fragment registerFragment = getActivity().getSupportFragmentManager().findFragmentById(R.id.fragment_register);
+                        if (registerFragment == null) {
+                            registerFragment = new RegisterFragment();
+                        }
+                        getActivity().getSupportFragmentManager().beginTransaction().replace(R.id.fragments_container, registerFragment).commit();
                         break;
                     default:
-                        getActivity().getSupportFragmentManager().beginTransaction().replace(R.id.fragments_container, new LoginFragment()).commit();
+                        Fragment loginFragment = getActivity().getSupportFragmentManager().findFragmentById(R.id.fragment_login);
+                        if (loginFragment == null) {
+                            loginFragment = new LoginFragment();
+                        }
+                        getActivity().getSupportFragmentManager().beginTransaction().replace(R.id.fragments_container, loginFragment).commit();
                         break;
                 }
             }

@@ -10,20 +10,12 @@ import org.json.JSONObject;
 /**
  * Created by bulat on 15.11.15.
  */
-public class MessageEvent {
+public class MessageEventResponse {
     private static final String LOG_TAG = "Message: messageEvent";
     private String channelId;
     private Message message;
 
-    public String getChannelId() {
-        return channelId;
-    }
-
-    public Message getMessage() {
-        return message;
-    }
-
-    public void parse(JSONObject jsonData) {
+    public MessageEventResponse(JSONObject jsonData) {
         Log.d(LOG_TAG, jsonData.toString());
         try {
             channelId = jsonData.getString("chid");
@@ -34,5 +26,13 @@ public class MessageEvent {
         } catch (JSONException e) {
             e.printStackTrace();
         }
+    }
+
+    public String getChannelId() {
+        return channelId;
+    }
+
+    public Message getMessage() {
+        return message;
     }
 }

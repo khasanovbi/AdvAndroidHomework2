@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">AdvAndroidHomework2</string>
+    <string name="app_name">Go Messenger</string>
 
     <!-- Strings related to login -->
     <string name="prompt_email">Email</string>
@@ -34,8 +34,9 @@
 
     <string name="register_button_text">Register</string>
     <string name="nickname">Nickname</string>
-    <string name="add_message">Add message</string>
+    <string name="add_channel">Add channel</string>
     <string name="action_settings">Settings</string>
     <string name="current_user">Вы</string>
     <string name="status">Status</string>
+    <string name="your_message">Ваше сообщение</string>
 </resources>

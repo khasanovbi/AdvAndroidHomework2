@@ -2,8 +2,9 @@ package com.technopark.bulat.advandroidhomework2.ui;
 
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
-import android.util.Log;
+import android.support.v7.app.ActionBar;
 import android.view.LayoutInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
@@ -13,7 +14,8 @@ import com.technopark.bulat.advandroidhomework2.R;
 import com.technopark.bulat.advandroidhomework2.models.GlobalUserIds;
 import com.technopark.bulat.advandroidhomework2.models.User;
 import com.technopark.bulat.advandroidhomework2.network.request.messages.UserInfo;
-import com.technopark.bulat.advandroidhomework2.network.response.ResponseMessage;
+import com.technopark.bulat.advandroidhomework2.network.response.RawResponse;
+import com.technopark.bulat.advandroidhomework2.network.response.messages.UserInfoResponse;
 import com.technopark.bulat.advandroidhomework2.network.socket.GlobalSocket;
 import com.technopark.bulat.advandroidhomework2.network.socket.socketObserver.Observer;
 
@@ -24,9 +26,17 @@ public class ContactInfoFragment extends Fragment implements Observer {
     private TextView mStatusTextView;
 
     @Override
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setHasOptionsMenu(true);
+    }
+
+    @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         mUserId = getArguments().getString(descriptionKey);
+
+        prepareActionBar();
 
         View rootView = inflater.inflate(R.layout.fragment_contact_info, container, false);
 
@@ -52,14 +62,13 @@ public class ContactInfoFragment extends Fragment implements Observer {
     }
 
     @Override
-    public void handleResponseMessage(ResponseMessage responseMessage) {
-        if (responseMessage.getAction().equals("userinfo")) {
-            final com.technopark.bulat.advandroidhomework2.network.response.messages.UserInfo userInfo = new com.technopark.bulat.advandroidhomework2.network.response.messages.UserInfo();
-            userInfo.parse(responseMessage.getJsonData());
-            if (userInfo.getStatus() == 0) {
+    public void handleResponseMessage(RawResponse rawResponse) {
+        if (rawResponse.getAction().equals("userinfo")) {
+            final UserInfoResponse userInfoResponse = new UserInfoResponse(rawResponse.getJsonData());
+            if (userInfoResponse.getStatus() == 0) {
                 getActivity().runOnUiThread(new Runnable() {
                     public void run() {
-                        User user = userInfo.getUser();
+                        User user = userInfoResponse.getUser();
                         mNicknameTextView.setText(user.getNickname());
                         mStatusTextView.setText(user.getStatus());
                     }
@@ -67,10 +76,30 @@ public class ContactInfoFragment extends Fragment implements Observer {
             } else {
                 getActivity().runOnUiThread(new Runnable() {
                     public void run() {
-                        Toast.makeText(getActivity().getBaseContext(), userInfo.getError(), Toast.LENGTH_LONG).show();
+                        Toast.makeText(getActivity().getBaseContext(), userInfoResponse.getError(), Toast.LENGTH_LONG).show();
                     }
                 });
             }
         }
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case android.R.id.home:
+                getActivity().getSupportFragmentManager().popBackStack();
+                break;
+            default:
+                return super.onOptionsItemSelected(item);
+        }
+        return false;
+    }
+
+    private void prepareActionBar() {
+        MainActivity mainActivity = (MainActivity) getActivity();
+        ActionBar actionBar = mainActivity.getmActionBar();
+        actionBar.setTitle("Info");
+        actionBar.setHomeAsUpIndicator(R.drawable.ic_keyboard_arrow_left_white_24dp);
+        actionBar.setIcon(R.drawable.ic_person_white_24dp);
     }
 }

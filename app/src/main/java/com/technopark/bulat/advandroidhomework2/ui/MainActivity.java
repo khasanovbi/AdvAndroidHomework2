@@ -6,14 +6,13 @@ import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
-import android.view.Menu;
 import android.view.Window;
 import android.view.WindowManager;
 
 import com.technopark.bulat.advandroidhomework2.R;
 
 public class MainActivity extends AppCompatActivity {
-    private FragmentManager fragmentManager;
+
     private ActionBar mActionBar;
 
     @Override
@@ -27,16 +26,17 @@ public class MainActivity extends AppCompatActivity {
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         mActionBar = getSupportActionBar();
-        mActionBar.setIcon(R.drawable.ic_public_black_24dp);
+        assert mActionBar != null;
         mActionBar.setHomeButtonEnabled(true);
         mActionBar.setDisplayHomeAsUpEnabled(true);
+        mActionBar.setDefaultDisplayHomeAsUpEnabled(true);
         mActionBar.hide();
-        fragmentManager = getSupportFragmentManager();
+        FragmentManager fragmentManager = getSupportFragmentManager();
         fragmentManager.beginTransaction().replace(R.id.fragments_container, new SplashScreenFragment()).commit();
     }
 
     public void unsetFullScreenFlag() {
-        getSupportActionBar().show();
+        mActionBar.show();
         getWindow().clearFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN);
     }
 
@@ -46,9 +46,7 @@ public class MainActivity extends AppCompatActivity {
         super.onStop();
     }
 
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.menu_main, menu);
-        return true;
+    public ActionBar getmActionBar() {
+        return mActionBar;
     }
 }

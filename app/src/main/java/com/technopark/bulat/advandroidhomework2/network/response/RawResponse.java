@@ -7,11 +7,11 @@ import org.json.JSONObject;
  * Created by bulat on 13.11.15.
  */
 
-public class ResponseMessage {
+public class RawResponse {
     private String action;
     protected JSONObject jsonData;
 
-    public ResponseMessage(String action, JSONObject jsonData) {
+    public RawResponse(String action, JSONObject jsonData) {
         this.action = action;
         this.jsonData = jsonData;
     }

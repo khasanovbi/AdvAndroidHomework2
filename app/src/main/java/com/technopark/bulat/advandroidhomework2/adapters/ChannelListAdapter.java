@@ -5,7 +5,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
-import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.technopark.bulat.advandroidhomework2.R;
@@ -39,9 +38,7 @@ public class ChannelListAdapter extends RecyclerView.Adapter<ChannelListAdapter.
     @Override
     public void onBindViewHolder(ChannelViewHolder holder, int position) {
         Channel channel = channelList.get(position);
-        StringBuilder stringBuilder = new StringBuilder(channel.getName());
-        stringBuilder.append(" (").append(String.valueOf(channel.getOnlineCount())).append(")");
-        holder.mName.setText(stringBuilder.toString());
+        holder.mName.setText(channel.getName() + " (" + String.valueOf(channel.getOnlineCount()) + ")");
         holder.mDescription.setText(channel.getDescription());
     }
 

@@ -1,6 +1,5 @@
 package com.technopark.bulat.advandroidhomework2.network.request.messages;
 
-import com.technopark.bulat.advandroidhomework2.models.GlobalUserIds;
 import com.technopark.bulat.advandroidhomework2.network.request.RequestMessage;
 
 import org.json.JSONException;

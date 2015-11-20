@@ -11,26 +11,26 @@ import java.util.Map;
 /**
  * Created by bulat on 16.11.15.
  */
-public class UserInfo implements RequestMessage {
-    private String userId;
-    private String cid;
-    private String sid;
+public class RegistrationRequest implements RequestMessage {
+    private String login;
+    private String password;
+    private String nickname;
 
-    public UserInfo(String userId, String cid, String sid) {
-        this.userId = userId;
-        this.cid = cid;
-        this.sid = sid;
+    public RegistrationRequest(String login, String password, String nickname) {
+        this.login = login;
+        this.password = password;
+        this.nickname = nickname;
     }
 
     @Override
     public String getRequestString() {
         Map<String, String> data = new HashMap<>();
-        data.put("user", userId);
-        data.put("cid", cid);
-        data.put("sid", sid);
+        data.put("login", login);
+        data.put("pass", password);
+        data.put("nick", nickname);
         JSONObject jsonObject = new JSONObject();
         try {
-            jsonObject.put("action", "userinfo");
+            jsonObject.put("action", "register");
             jsonObject.put("data", new JSONObject(data));
         } catch (JSONException e) {
             e.printStackTrace();

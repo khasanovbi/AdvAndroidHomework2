@@ -2,6 +2,7 @@ package com.technopark.bulat.advandroidhomework2.ui;
 
 
 import android.os.Bundle;
+import android.support.v4.app.DialogFragment;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.ActionBar;
@@ -21,14 +22,16 @@ import com.technopark.bulat.advandroidhomework2.R;
 import com.technopark.bulat.advandroidhomework2.adapters.ChannelListAdapter;
 import com.technopark.bulat.advandroidhomework2.models.Channel;
 import com.technopark.bulat.advandroidhomework2.models.GlobalUserIds;
-import com.technopark.bulat.advandroidhomework2.network.request.messages.ChannelList;
+import com.technopark.bulat.advandroidhomework2.network.request.messages.ChannelListRequest;
 import com.technopark.bulat.advandroidhomework2.network.response.RawResponse;
 import com.technopark.bulat.advandroidhomework2.network.response.messages.ChannelListResponse;
+import com.technopark.bulat.advandroidhomework2.network.response.messages.CreateChannelResponse;
 import com.technopark.bulat.advandroidhomework2.network.socket.GlobalSocket;
 import com.technopark.bulat.advandroidhomework2.network.socket.socketObserver.Observer;
 
 public class ChannelListFragment extends Fragment implements ChannelListAdapter.OnItemClickListener, Observer {
     private ChannelListAdapter mChannelListAdapter;
+    private DialogFragment mChannelAddDialogFragment;
 
     public ChannelListFragment() {
         // Required empty public constructor
@@ -43,6 +46,7 @@ public class ChannelListFragment extends Fragment implements ChannelListAdapter.
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
+        mChannelAddDialogFragment = new ChannelAddDialogFragment();
         MainActivity mainActivity = (MainActivity) getActivity();
         mainActivity.unsetFullScreenFlag();
         prepareActionBar();
@@ -83,7 +87,7 @@ public class ChannelListFragment extends Fragment implements ChannelListAdapter.
                 break;
             case R.id.add_channel_button:
                 Log.d("TODO", "Channel add popup");
-                // TODO Channel add popup
+                mChannelAddDialogFragment.show(getActivity().getSupportFragmentManager(), "dlsadklasdklas");
                 break;
             default:
                 return super.onOptionsItemSelected(item);
@@ -96,7 +100,7 @@ public class ChannelListFragment extends Fragment implements ChannelListAdapter.
         super.onResume();
         /* Subscribe to socket messages */
         GlobalSocket.getInstance().registerObserver(this);
-        GlobalSocket.getInstance().performAsyncRequest(new ChannelList(GlobalUserIds.getInstance().cid, GlobalUserIds.getInstance().sid));
+        GlobalSocket.getInstance().performAsyncRequest(new ChannelListRequest(GlobalUserIds.getInstance().cid, GlobalUserIds.getInstance().sid));
     }
 
     @Override
@@ -114,24 +118,43 @@ public class ChannelListFragment extends Fragment implements ChannelListAdapter.
 
     @Override
     public void handleResponseMessage(RawResponse rawResponse) {
-        if (rawResponse.getAction().equals("channellist")) {
-            final ChannelListResponse channelList = new ChannelListResponse(rawResponse.getJsonData());
-            int status = channelList.getStatus();
-            if (status == 0) {
-                getActivity().runOnUiThread(new Runnable() {
-                    public void run() {
-                        for (Channel channel : channelList.getChannels()) {
-                            mChannelListAdapter.add(channel);
+        String action = rawResponse.getAction();
+        switch (action) {
+            case "channellist":
+                final ChannelListResponse channelListResponse = new ChannelListResponse(rawResponse.getJsonData());
+                int status = channelListResponse.getStatus();
+                if (status == 0) {
+                    getActivity().runOnUiThread(new Runnable() {
+                        public void run() {
+                            for (Channel channel : channelListResponse.getChannels()) {
+                                mChannelListAdapter.add(channel);
+                            }
                         }
-                    }
-                });
-            } else {
-                getActivity().runOnUiThread(new Runnable() {
-                    public void run() {
-                        Toast.makeText(getActivity().getBaseContext(), channelList.getError(), Toast.LENGTH_LONG).show();
-                    }
-                });
-            }
+                    });
+                } else {
+                    getActivity().runOnUiThread(new Runnable() {
+                        public void run() {
+                            Toast.makeText(getActivity().getBaseContext(), channelListResponse.getError(), Toast.LENGTH_LONG).show();
+                        }
+                    });
+                }
+                break;
+            case "createchannel":
+                final CreateChannelResponse createChannelResponse = new CreateChannelResponse(rawResponse.getJsonData());
+                if (createChannelResponse.getStatus() == 0) {
+                    getActivity().runOnUiThread(new Runnable() {
+                        public void run() {
+                            Toast.makeText(getActivity().getBaseContext(), "Channel successfully created.", Toast.LENGTH_LONG).show();
+                        }
+                    });
+                } else {
+                    getActivity().runOnUiThread(new Runnable() {
+                        public void run() {
+                            Toast.makeText(getActivity().getBaseContext(), createChannelResponse.getError(), Toast.LENGTH_LONG).show();
+                        }
+                    });
+                }
+                break;
         }
     }
 

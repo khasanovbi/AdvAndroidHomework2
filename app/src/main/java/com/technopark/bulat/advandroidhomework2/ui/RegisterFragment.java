@@ -13,8 +13,8 @@ import android.widget.Toast;
 
 import com.technopark.bulat.advandroidhomework2.R;
 import com.technopark.bulat.advandroidhomework2.models.GlobalUserIds;
-import com.technopark.bulat.advandroidhomework2.network.request.messages.Auth;
-import com.technopark.bulat.advandroidhomework2.network.request.messages.Registration;
+import com.technopark.bulat.advandroidhomework2.network.request.messages.AuthRequest;
+import com.technopark.bulat.advandroidhomework2.network.request.messages.RegistrationRequest;
 import com.technopark.bulat.advandroidhomework2.network.response.RawResponse;
 import com.technopark.bulat.advandroidhomework2.network.response.messages.AuthResponse;
 import com.technopark.bulat.advandroidhomework2.network.response.messages.RegistrationResponse;
@@ -79,7 +79,7 @@ public class RegisterFragment extends Fragment implements View.OnClickListener, 
                 sharedPreferencesEditor.putString("password", mPassword);
                 sharedPreferencesEditor.putString("nickname", nickname);
                 sharedPreferencesEditor.apply();
-                GlobalSocket.getInstance().performAsyncRequest(new Registration(mLogin, mPassword, nickname));
+                GlobalSocket.getInstance().performAsyncRequest(new RegistrationRequest(mLogin, mPassword, nickname));
             }
         }
     }
@@ -90,7 +90,7 @@ public class RegisterFragment extends Fragment implements View.OnClickListener, 
         if (action.equals("register")) {
             final RegistrationResponse registrationResponse = new RegistrationResponse(rawResponse.getJsonData());
             if (registrationResponse.getStatus() == 0) {
-                GlobalSocket.getInstance().performAsyncRequest(new Auth(mLogin, mPassword));
+                GlobalSocket.getInstance().performAsyncRequest(new AuthRequest(mLogin, mPassword));
             } else {
                 getActivity().runOnUiThread(new Runnable() {
                     public void run() {
@@ -99,11 +99,11 @@ public class RegisterFragment extends Fragment implements View.OnClickListener, 
                 });
             }
         } else if (action.equals("auth")) {
-            final AuthResponse auth = new AuthResponse(rawResponse.getJsonData());
-            int status = auth.getStatus();
+            final AuthResponse authResponse = new AuthResponse(rawResponse.getJsonData());
+            int status = authResponse.getStatus();
             if (status == 0) {
-                GlobalUserIds.getInstance().cid = auth.getCid();
-                GlobalUserIds.getInstance().sid = auth.getSid();
+                GlobalUserIds.getInstance().cid = authResponse.getCid();
+                GlobalUserIds.getInstance().sid = authResponse.getSid();
                 Fragment channelListFragment = getActivity().getSupportFragmentManager().findFragmentById(R.id.fragment_channel_list);
                 if (channelListFragment == null) {
                     channelListFragment = new ChannelListFragment();
@@ -112,7 +112,7 @@ public class RegisterFragment extends Fragment implements View.OnClickListener, 
             } else {
                 getActivity().runOnUiThread(new Runnable() {
                     public void run() {
-                        Toast.makeText(getActivity().getBaseContext(), auth.getError(), Toast.LENGTH_LONG).show();
+                        Toast.makeText(getActivity().getBaseContext(), authResponse.getError(), Toast.LENGTH_LONG).show();
                     }
                 });
             }

@@ -11,12 +11,12 @@ import java.util.Map;
 /**
  * Created by bulat on 16.11.15.
  */
-public class EnterChat implements RequestMessage{
+public class EnterChatRequest implements RequestMessage {
     private String cid;
     private String sid;
     private String channelId;
 
-    public EnterChat(String cid, String sid, String channelId) {
+    public EnterChatRequest(String cid, String sid, String channelId) {
         this.cid = cid;
         this.sid = sid;
         this.channelId = channelId;

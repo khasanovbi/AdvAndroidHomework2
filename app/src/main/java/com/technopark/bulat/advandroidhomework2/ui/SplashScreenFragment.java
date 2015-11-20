@@ -16,7 +16,7 @@ import com.technopark.bulat.advandroidhomework2.models.GlobalUserIds;
 import com.technopark.bulat.advandroidhomework2.network.response.RawResponse;
 import com.technopark.bulat.advandroidhomework2.network.response.messages.AuthResponse;
 import com.technopark.bulat.advandroidhomework2.network.socket.GlobalSocket;
-import com.technopark.bulat.advandroidhomework2.network.request.messages.Auth;
+import com.technopark.bulat.advandroidhomework2.network.request.messages.AuthRequest;
 import com.technopark.bulat.advandroidhomework2.network.socket.socketObserver.Observer;
 
 public class SplashScreenFragment extends Fragment implements OnPreloadTaskDone, Observer {
@@ -38,7 +38,7 @@ public class SplashScreenFragment extends Fragment implements OnPreloadTaskDone,
         String login = sharedPreferences.getString("login", null);
         String password = sharedPreferences.getString("password", null);
         if (login != null && password != null) {
-            GlobalSocket.getInstance().performAsyncRequest(new Auth(login, password));
+            GlobalSocket.getInstance().performAsyncRequest(new AuthRequest(login, password));
         } else {
             if (mPreloadTask != null) {
                 mPreloadTask.cancel(true);
@@ -65,11 +65,11 @@ public class SplashScreenFragment extends Fragment implements OnPreloadTaskDone,
     @Override
     public void handleResponseMessage(RawResponse rawResponse) {
         if (rawResponse.getAction().equals("auth")) {
-            final AuthResponse auth = new AuthResponse(rawResponse.getJsonData());
-            int status = auth.getStatus();
+            final AuthResponse authResponse = new AuthResponse(rawResponse.getJsonData());
+            int status = authResponse.getStatus();
             if (status == 0) {
-                GlobalUserIds.getInstance().cid = auth.getCid();
-                GlobalUserIds.getInstance().sid = auth.getSid();
+                GlobalUserIds.getInstance().cid = authResponse.getCid();
+                GlobalUserIds.getInstance().sid = authResponse.getSid();
                 Fragment channelListFragment = getActivity().getSupportFragmentManager().findFragmentById(R.id.fragment_channel_list);
                 if (channelListFragment == null) {
                     channelListFragment = new ChannelListFragment();
@@ -78,7 +78,7 @@ public class SplashScreenFragment extends Fragment implements OnPreloadTaskDone,
             } else {
                 getActivity().runOnUiThread(new Runnable() {
                     public void run() {
-                        Toast.makeText(getActivity().getBaseContext(), auth.getError(), Toast.LENGTH_LONG).show();
+                        Toast.makeText(getActivity().getBaseContext(), authResponse.getError(), Toast.LENGTH_LONG).show();
                     }
                 });
                 switch (status) {

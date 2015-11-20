@@ -11,26 +11,23 @@ import java.util.Map;
 /**
  * Created by bulat on 16.11.15.
  */
-public class LeaveChat implements RequestMessage{
-    private String cid;
-    private String sid;
-    private String channelId;
-
-    public LeaveChat(String cid, String sid, String channelId) {
-        this.cid = cid;
-        this.sid = sid;
-        this.channelId = channelId;
+public class AuthRequest implements RequestMessage {
+    private String login;
+    private String password;
+    public AuthRequest(String login, String password) {
+        this.login = login;
+        this.password = password;
     }
 
     @Override
     public String getRequestString() {
         Map<String, String> data = new HashMap<>();
-        data.put("cid", cid);
-        data.put("sid", sid);
-        data.put("channel", channelId);
+        data.put("login", login);
+        data.put("pass", password);
+
         JSONObject jsonObject = new JSONObject();
         try {
-            jsonObject.put("action", "leave");
+            jsonObject.put("action", "auth");
             jsonObject.put("data", new JSONObject(data));
         } catch (JSONException e) {
             e.printStackTrace();

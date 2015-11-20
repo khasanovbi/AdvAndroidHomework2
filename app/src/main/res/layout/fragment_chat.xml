@@ -33,8 +33,6 @@
             android:layout_toLeftOf="@id/send_button"
             android:layout_toStartOf="@id/send_button"
             android:hint="@string/your_message" />
-
-
     </RelativeLayout>
 
     <RelativeLayout
@@ -46,8 +44,5 @@
             android:id="@+id/chat_recycler_view"
             android:layout_width="match_parent"
             android:layout_height="match_parent" />
-
     </RelativeLayout>
-
-
 </RelativeLayout>

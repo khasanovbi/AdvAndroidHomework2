@@ -13,7 +13,7 @@ import android.widget.Toast;
 import com.technopark.bulat.advandroidhomework2.R;
 import com.technopark.bulat.advandroidhomework2.models.GlobalUserIds;
 import com.technopark.bulat.advandroidhomework2.models.User;
-import com.technopark.bulat.advandroidhomework2.network.request.messages.UserInfo;
+import com.technopark.bulat.advandroidhomework2.network.request.messages.UserInfoRequest;
 import com.technopark.bulat.advandroidhomework2.network.response.RawResponse;
 import com.technopark.bulat.advandroidhomework2.network.response.messages.UserInfoResponse;
 import com.technopark.bulat.advandroidhomework2.network.socket.GlobalSocket;
@@ -51,7 +51,7 @@ public class ContactInfoFragment extends Fragment implements Observer {
         super.onResume();
         /* Subscribe to socket messages */
         GlobalSocket.getInstance().registerObserver(this);
-        GlobalSocket.getInstance().performAsyncRequest(new UserInfo(mUserId, GlobalUserIds.getInstance().cid, GlobalUserIds.getInstance().sid));
+        GlobalSocket.getInstance().performAsyncRequest(new UserInfoRequest(mUserId, GlobalUserIds.getInstance().cid, GlobalUserIds.getInstance().sid));
     }
 
     @Override

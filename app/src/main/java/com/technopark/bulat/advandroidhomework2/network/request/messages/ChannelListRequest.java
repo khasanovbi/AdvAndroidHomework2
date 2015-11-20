@@ -11,17 +11,13 @@ import java.util.Map;
 /**
  * Created by bulat on 16.11.15.
  */
-public class SendMessage implements RequestMessage{
+public class ChannelListRequest implements RequestMessage {
     private String cid;
     private String sid;
-    private String channelId;
-    private String text;
 
-    public SendMessage(String cid, String sid, String channelId, String text) {
+    public ChannelListRequest(String cid, String sid) {
         this.cid = cid;
         this.sid = sid;
-        this.channelId = channelId;
-        this.text = text;
     }
 
     @Override
@@ -29,11 +25,10 @@ public class SendMessage implements RequestMessage{
         Map<String, String> data = new HashMap<>();
         data.put("cid", cid);
         data.put("sid", sid);
-        data.put("channel", channelId);
-        data.put("body", text);
+
         JSONObject jsonObject = new JSONObject();
         try {
-            jsonObject.put("action", "message");
+            jsonObject.put("action", "channellist");
             jsonObject.put("data", new JSONObject(data));
         } catch (JSONException e) {
             e.printStackTrace();

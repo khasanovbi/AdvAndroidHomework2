@@ -39,4 +39,9 @@
     <string name="current_user">Вы</string>
     <string name="status">Status</string>
     <string name="your_message">Ваше сообщение</string>
+
+    <string name="ok_button">OK</string>
+    <string name="cancel_button">Cancel</string>
+    <string name="channel_name">Имя канала</string>
+    <string name="channel_description">Короткое описание</string>
 </resources>

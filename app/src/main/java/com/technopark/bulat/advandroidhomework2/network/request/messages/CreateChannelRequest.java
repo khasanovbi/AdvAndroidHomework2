@@ -9,28 +9,31 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
- * Created by bulat on 16.11.15.
+ * Created by bulat on 20.11.15.
  */
-public class Registration implements RequestMessage {
-    private String login;
-    private String password;
-    private String nickname;
+public class CreateChannelRequest implements RequestMessage {
+    private String cid;
+    private String sid;
+    private String name;
+    private String description;
 
-    public Registration(String login, String password, String nickname) {
-        this.login = login;
-        this.password = password;
-        this.nickname = nickname;
+    public CreateChannelRequest(String cid, String sid, String name, String description) {
+        this.cid = cid;
+        this.sid = sid;
+        this.name = name;
+        this.description = description;
     }
 
     @Override
     public String getRequestString() {
         Map<String, String> data = new HashMap<>();
-        data.put("login", login);
-        data.put("pass", password);
-        data.put("nick", nickname);
+        data.put("cid", cid);
+        data.put("sid", sid);
+        data.put("name", name);
+        data.put("descr", description);
         JSONObject jsonObject = new JSONObject();
         try {
-            jsonObject.put("action", "register");
+            jsonObject.put("action", "createchannel");
             jsonObject.put("data", new JSONObject(data));
         } catch (JSONException e) {
             e.printStackTrace();

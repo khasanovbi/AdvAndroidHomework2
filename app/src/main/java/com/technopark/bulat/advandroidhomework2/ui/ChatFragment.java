@@ -21,8 +21,8 @@ import com.technopark.bulat.advandroidhomework2.adapters.ChatAdapter;
 import com.technopark.bulat.advandroidhomework2.models.Channel;
 import com.technopark.bulat.advandroidhomework2.models.GlobalUserIds;
 import com.technopark.bulat.advandroidhomework2.models.Message;
-import com.technopark.bulat.advandroidhomework2.network.request.messages.EnterChat;
-import com.technopark.bulat.advandroidhomework2.network.request.messages.SendMessage;
+import com.technopark.bulat.advandroidhomework2.network.request.messages.EnterChatRequest;
+import com.technopark.bulat.advandroidhomework2.network.request.messages.SendMessageRequest;
 import com.technopark.bulat.advandroidhomework2.network.response.RawResponse;
 import com.technopark.bulat.advandroidhomework2.network.response.events.EnterEventResponse;
 import com.technopark.bulat.advandroidhomework2.network.response.events.LeaveEventResponse;
@@ -78,7 +78,7 @@ public class ChatFragment extends Fragment implements OnClickListener, ChatAdapt
         super.onResume();
         /* Subscribe to socket messages */
         GlobalSocket.getInstance().registerObserver(this);
-        GlobalSocket.getInstance().performAsyncRequest(new EnterChat(GlobalUserIds.getInstance().cid, GlobalUserIds.getInstance().sid, mChannel.getId()));
+        GlobalSocket.getInstance().performAsyncRequest(new EnterChatRequest(GlobalUserIds.getInstance().cid, GlobalUserIds.getInstance().sid, mChannel.getId()));
     }
 
     @Override
@@ -94,7 +94,7 @@ public class ChatFragment extends Fragment implements OnClickListener, ChatAdapt
             case R.id.send_button:
                 String messageText = mMessageEditText.getText().toString();
                 if (!messageText.equals("")) {
-                    GlobalSocket.getInstance().performAsyncRequest(new SendMessage(GlobalUserIds.getInstance().cid, GlobalUserIds.getInstance().sid, mChannel.getId(), messageText));
+                    GlobalSocket.getInstance().performAsyncRequest(new SendMessageRequest(GlobalUserIds.getInstance().cid, GlobalUserIds.getInstance().sid, mChannel.getId(), messageText));
                 }
                 break;
         }

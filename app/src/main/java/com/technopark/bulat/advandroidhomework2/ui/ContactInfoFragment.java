@@ -36,7 +36,7 @@ public class ContactInfoFragment extends Fragment implements Observer {
                              Bundle savedInstanceState) {
         mUserId = getArguments().getString(descriptionKey);
 
-        prepareActionBar();
+        prepareView();
 
         View rootView = inflater.inflate(R.layout.fragment_contact_info, container, false);
 
@@ -95,9 +95,10 @@ public class ContactInfoFragment extends Fragment implements Observer {
         return false;
     }
 
-    private void prepareActionBar() {
+    private void prepareView() {
         MainActivity mainActivity = (MainActivity) getActivity();
-        ActionBar actionBar = mainActivity.getMActionBar();
+        ActionBar actionBar = mainActivity.getSupportActionBar();
+        assert actionBar != null;
         actionBar.setTitle(R.string.info);
         actionBar.setHomeAsUpIndicator(R.drawable.ic_keyboard_arrow_left_white_24dp);
         actionBar.setIcon(R.drawable.ic_person_white_24dp);

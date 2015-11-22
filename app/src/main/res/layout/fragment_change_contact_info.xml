@@ -1,39 +1,47 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-xmlns:tools="http://schemas.android.com/tools"
-android:id="@+id/fragment_change_contact_info"
-android:layout_width="match_parent"
-android:layout_height="match_parent"
-tools:context="com.technopark.bulat.advandroidhomework2.ui.ContactInfoFragment">
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/fragment_change_contact_info"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="com.technopark.bulat.advandroidhomework2.ui.ContactInfoFragment">
 
-<ImageView
-    android:id="@+id/contact_info_image"
-    android:layout_width="192dp"
-    android:layout_height="192dp"
-    android:layout_centerHorizontal="true"
-    android:layout_marginTop="32dp"
-    android:src="@drawable/splash_screen_image" />
+    <ImageView
+        android:id="@+id/contact_info_image"
+        android:layout_width="192dp"
+        android:layout_height="192dp"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="32dp"
+        android:src="@drawable/splash_screen_image" />
 
-<TextView
-    android:id="@+id/contact_info_nickname"
-    android:layout_width="wrap_content"
-    android:layout_height="wrap_content"
-    android:layout_alignLeft="@+id/contact_info_image"
-    android:layout_alignStart="@+id/contact_info_image"
-    android:layout_below="@+id/contact_info_image"
-    android:layout_marginTop="32dp"
-    android:text="@string/nickname"
-    android:textColor="@android:color/black"
-    android:textSize="18sp" />
+    <ImageButton
+        android:id="@+id/change_contact_info_image"
+        android:layout_width="48dp"
+        android:layout_height="48dp"
+        android:layout_below="@id/contact_info_image"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="8dp"
+        android:background="@null"
+        android:src="@drawable/ic_party_mode_black_48dp" />
 
-<TextView
-    android:id="@+id/contact_info_status"
-    android:layout_width="wrap_content"
-    android:layout_height="wrap_content"
-    android:layout_alignLeft="@+id/contact_info_nickname"
-    android:layout_alignStart="@+id/contact_info_nickname"
-    android:layout_below="@+id/contact_info_nickname"
-    android:layout_marginTop="8dp"
-    android:text="@string/status"
-    android:textColor="@android:color/black"
-    android:textSize="18sp" />
+    <EditText
+        android:id="@+id/contact_info_status"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/change_contact_info_image"
+        android:layout_centerHorizontal="true"
+        android:layout_marginLeft="30dp"
+        android:layout_marginRight="30dp"
+        android:layout_marginTop="8dp"
+        android:hint="@string/status"
+        android:textColor="@android:color/black"
+        android:textSize="18sp" />
+
+    <Button
+        android:id="@+id/contact_info_save_button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/contact_info_status"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="10dp"
+        android:text="@string/save" />
 </RelativeLayout>

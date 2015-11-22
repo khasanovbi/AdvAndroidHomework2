@@ -1,6 +1,5 @@
 package com.technopark.bulat.advandroidhomework2.ui;
 
-
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
@@ -34,9 +33,6 @@ import com.technopark.bulat.advandroidhomework2.network.socket.socketObserver.Ob
 
 import java.util.List;
 
-/**
- * A simple {@link Fragment} subclass.
- */
 public class ChatFragment extends Fragment implements OnClickListener, ChatAdapter.OnItemClickListener, Observer {
     private static final String LOG_TAG = "ChatFragment";
     private ChatAdapter mChatAdapter;
@@ -55,7 +51,7 @@ public class ChatFragment extends Fragment implements OnClickListener, ChatAdapt
                              Bundle savedInstanceState) {
         mChannel = (Channel) getArguments().getSerializable(Channel.descriptionKey);
 
-        prepareActionBar();
+        prepareView();
         View rootView = inflater.inflate(R.layout.fragment_chat, container, false);
 
         mChatRecyclerView = (RecyclerView) rootView.findViewById(R.id.chat_recycler_view);
@@ -121,17 +117,12 @@ public class ChatFragment extends Fragment implements OnClickListener, ChatAdapt
             case "enter":
                 EnterChatResponse enterChatResponse = new EnterChatResponse(rawResponse.getJsonData());
                 List<Message> messageList = enterChatResponse.getLastMessages();
-                for (Message message: messageList) {
+                for (Message message : messageList) {
                     mChatAdapter.add(message);
                 }
                 break;
             case "message":
                 final SendMessageResponse sendMessageResponse = new SendMessageResponse(rawResponse.getJsonData());
-                getActivity().runOnUiThread(new Runnable() {
-                    public void run() {
-
-                    }
-                });
                 break;
             case "ev_message":
                 final MessageEventResponse messageEvent = new MessageEventResponse(rawResponse.getJsonData());
@@ -147,7 +138,7 @@ public class ChatFragment extends Fragment implements OnClickListener, ChatAdapt
                 final EnterEventResponse enterEvent = new EnterEventResponse(rawResponse.getJsonData());
                 getActivity().runOnUiThread(new Runnable() {
                     public void run() {
-                        Toast.makeText(getActivity().getBaseContext(), enterEvent.getUser().getNickname() + " enter to chat", Toast.LENGTH_LONG).show();
+                        Toast.makeText(getActivity().getBaseContext(), enterEvent.getUser().getNickname() + " enter to chat", Toast.LENGTH_SHORT).show();
                     }
                 });
                 break;
@@ -155,9 +146,10 @@ public class ChatFragment extends Fragment implements OnClickListener, ChatAdapt
                 final LeaveEventResponse leaveEvent = new LeaveEventResponse(rawResponse.getJsonData());
                 getActivity().runOnUiThread(new Runnable() {
                     public void run() {
-                        Toast.makeText(getActivity().getBaseContext(), leaveEvent.getUser().getNickname() + " leave chat", Toast.LENGTH_LONG).show();
+                        Toast.makeText(getActivity().getBaseContext(), leaveEvent.getUser().getNickname() + " leave chat", Toast.LENGTH_SHORT).show();
                     }
                 });
+                break;
         }
     }
 
@@ -173,9 +165,10 @@ public class ChatFragment extends Fragment implements OnClickListener, ChatAdapt
         return false;
     }
 
-    private void prepareActionBar() {
+    private void prepareView() {
         MainActivity mainActivity = (MainActivity) getActivity();
-        ActionBar actionBar = mainActivity.getMActionBar();
+        ActionBar actionBar = mainActivity.getSupportActionBar();
+        assert actionBar != null;
         actionBar.setTitle(mChannel.getName());
         actionBar.setHomeAsUpIndicator(R.drawable.ic_keyboard_arrow_left_white_24dp);
         actionBar.setIcon(R.drawable.ic_public_white_24dp);

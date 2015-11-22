@@ -5,11 +5,11 @@ import android.os.Bundle;
 import android.support.v4.app.DialogFragment;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
+import android.support.v4.view.GravityCompat;
 import android.support.v7.app.ActionBar;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -47,9 +47,7 @@ public class ChannelListFragment extends Fragment implements ChannelListAdapter.
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         mChannelAddDialogFragment = new ChannelAddDialogFragment();
-        MainActivity mainActivity = (MainActivity) getActivity();
-        mainActivity.unsetFullScreenFlag();
-        prepareActionBar();
+        prepareView();
         View rootView = inflater.inflate(R.layout.fragment_channel_list, container, false);
         RecyclerView mChannelListRecyclerView = (RecyclerView) rootView.findViewById(R.id.channel_list_recycler_view);
         mChannelListAdapter = new ChannelListAdapter();
@@ -82,8 +80,7 @@ public class ChannelListFragment extends Fragment implements ChannelListAdapter.
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case android.R.id.home:
-                Log.d("TODO", "Drawer open");
-                // TODO Drawer open
+                ((MainActivity) getActivity()).getDrawerLayout().openDrawer(GravityCompat.START);
                 break;
             case R.id.add_channel_button:
                 mChannelAddDialogFragment.show(getActivity().getSupportFragmentManager(), "channelAddDialogFragment");
@@ -157,11 +154,14 @@ public class ChannelListFragment extends Fragment implements ChannelListAdapter.
         }
     }
 
-    private void prepareActionBar() {
+    private void prepareView() {
         MainActivity mainActivity = (MainActivity) getActivity();
-        ActionBar actionBar = mainActivity.getMActionBar();
+        mainActivity.unsetFullScreenFlag();
+        ActionBar actionBar = mainActivity.getSupportActionBar();
+        assert actionBar != null;
+        actionBar.show();
         actionBar.setTitle(R.string.list_of_chats);
-        actionBar.setHomeAsUpIndicator(R.drawable.ic_menu_white_24dp);
         actionBar.setIcon(R.drawable.ic_chat_white_24dp);
+        mainActivity.getDrawerToggle().syncState();
     }
 }

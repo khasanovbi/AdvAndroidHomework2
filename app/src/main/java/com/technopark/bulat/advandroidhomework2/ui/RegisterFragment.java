@@ -5,25 +5,26 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v4.widget.DrawerLayout;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.technopark.bulat.advandroidhomework2.R;
 import com.technopark.bulat.advandroidhomework2.models.GlobalUserIds;
 import com.technopark.bulat.advandroidhomework2.network.request.messages.AuthRequest;
 import com.technopark.bulat.advandroidhomework2.network.request.messages.RegistrationRequest;
+import com.technopark.bulat.advandroidhomework2.network.request.messages.UserInfoRequest;
 import com.technopark.bulat.advandroidhomework2.network.response.RawResponse;
 import com.technopark.bulat.advandroidhomework2.network.response.messages.AuthResponse;
 import com.technopark.bulat.advandroidhomework2.network.response.messages.RegistrationResponse;
+import com.technopark.bulat.advandroidhomework2.network.response.messages.UserInfoResponse;
 import com.technopark.bulat.advandroidhomework2.network.socket.GlobalSocket;
 import com.technopark.bulat.advandroidhomework2.network.socket.socketObserver.Observer;
 
-/**
- * A simple {@link Fragment} subclass.
- */
 public class RegisterFragment extends Fragment implements View.OnClickListener, Observer {
     private SharedPreferences mSharedPreferences;
     private EditText mLoginEditText;
@@ -86,36 +87,73 @@ public class RegisterFragment extends Fragment implements View.OnClickListener, 
 
     @Override
     public void handleResponseMessage(RawResponse rawResponse) {
-        String action = rawResponse.getAction();
-        if (action.equals("register")) {
-            final RegistrationResponse registrationResponse = new RegistrationResponse(rawResponse.getJsonData());
-            if (registrationResponse.getStatus() == 0) {
-                GlobalSocket.getInstance().performAsyncRequest(new AuthRequest(mLogin, mPassword));
-            } else {
-                getActivity().runOnUiThread(new Runnable() {
-                    public void run() {
-                        Toast.makeText(getActivity().getBaseContext(), registrationResponse.getError(), Toast.LENGTH_LONG).show();
-                    }
-                });
-            }
-        } else if (action.equals("auth")) {
-            final AuthResponse authResponse = new AuthResponse(rawResponse.getJsonData());
-            int status = authResponse.getStatus();
-            if (status == 0) {
-                GlobalUserIds.getInstance().cid = authResponse.getCid();
-                GlobalUserIds.getInstance().sid = authResponse.getSid();
-                Fragment channelListFragment = getActivity().getSupportFragmentManager().findFragmentById(R.id.fragment_channel_list);
-                if (channelListFragment == null) {
-                    channelListFragment = new ChannelListFragment();
+        switch (rawResponse.getAction()) {
+            case "register":
+                final RegistrationResponse registrationResponse = new RegistrationResponse(rawResponse.getJsonData());
+                if (registrationResponse.getStatus() == 0) {
+                    GlobalSocket.getInstance().performAsyncRequest(new AuthRequest(mLogin, mPassword));
+                } else {
+                    getActivity().runOnUiThread(new Runnable() {
+                        public void run() {
+                            Toast.makeText(getActivity().getBaseContext(), registrationResponse.getError(), Toast.LENGTH_LONG).show();
+                        }
+                    });
                 }
-                getActivity().getSupportFragmentManager().beginTransaction().replace(R.id.fragments_container, channelListFragment).commit();
-            } else {
-                getActivity().runOnUiThread(new Runnable() {
-                    public void run() {
-                        Toast.makeText(getActivity().getBaseContext(), authResponse.getError(), Toast.LENGTH_LONG).show();
+                break;
+            case "auth":
+                final AuthResponse authResponse = new AuthResponse(rawResponse.getJsonData());
+                int status = authResponse.getStatus();
+                if (status == 0) {
+                    GlobalUserIds.getInstance().cid = authResponse.getCid();
+                    GlobalUserIds.getInstance().sid = authResponse.getSid();
+                    GlobalSocket.getInstance().performAsyncRequest(
+                            new UserInfoRequest(
+                                    GlobalUserIds.getInstance().cid,
+                                    GlobalUserIds.getInstance().cid,
+                                    GlobalUserIds.getInstance().sid
+                            )
+                    );
+                } else {
+                    getActivity().runOnUiThread(new Runnable() {
+                        public void run() {
+                            Toast.makeText(getActivity().getBaseContext(), authResponse.getError(), Toast.LENGTH_LONG).show();
+                        }
+                    });
+                }
+                break;
+            case "userinfo":
+                final UserInfoResponse userInfoResponse = new UserInfoResponse(rawResponse.getJsonData());
+                if (userInfoResponse.getStatus() == 0) {
+                    getActivity().runOnUiThread(new Runnable() {
+                        public void run() {
+                            String userStatus = userInfoResponse.getUser().getStatus();
+                            String nickname = userInfoResponse.getUser().getNickname();
+                            SharedPreferences.Editor sharedPreferencesEditor = mSharedPreferences.edit();
+                            sharedPreferencesEditor.putString("status", userStatus);
+                            sharedPreferencesEditor.putString("nickname", nickname);
+                            sharedPreferencesEditor.apply();
+                            DrawerLayout drawerLayout = ((MainActivity) getActivity()).getDrawerLayout();
+                            ((TextView) drawerLayout.findViewById(R.id.nickname)).setText(nickname);
+                            ((TextView) drawerLayout.findViewById(R.id.status)).setText(userStatus);
+                        }
+                    });
+                    Fragment channelListFragment = getActivity().getSupportFragmentManager().findFragmentById(R.id.fragment_channel_list);
+                    if (channelListFragment == null) {
+                        channelListFragment = new ChannelListFragment();
                     }
-                });
-            }
+                    getActivity()
+                            .getSupportFragmentManager()
+                            .beginTransaction()
+                            .replace(R.id.fragments_container, channelListFragment)
+                            .commit();
+                } else {
+                    getActivity().runOnUiThread(new Runnable() {
+                        public void run() {
+                            Toast.makeText(getActivity().getBaseContext(), userInfoResponse.getError(), Toast.LENGTH_LONG).show();
+                        }
+                    });
+                }
+                break;
         }
     }
 }

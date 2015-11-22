@@ -97,8 +97,8 @@ public class ContactInfoFragment extends Fragment implements Observer {
 
     private void prepareActionBar() {
         MainActivity mainActivity = (MainActivity) getActivity();
-        ActionBar actionBar = mainActivity.getmActionBar();
-        actionBar.setTitle("Info");
+        ActionBar actionBar = mainActivity.getMActionBar();
+        actionBar.setTitle(R.string.info);
         actionBar.setHomeAsUpIndicator(R.drawable.ic_keyboard_arrow_left_white_24dp);
         actionBar.setIcon(R.drawable.ic_person_white_24dp);
     }

@@ -4,4 +4,7 @@
     <dimen name="fragment_vertical_margin">16dp</dimen>
     <dimen name="dialog_padding">24dp</dimen>
     <dimen name="message_author_max_width">50dp</dimen>
+
+    <dimen name="nav_header_vertical_spacing">16dp</dimen>
+    <dimen name="nav_header_height">160dp</dimen>
 </resources>

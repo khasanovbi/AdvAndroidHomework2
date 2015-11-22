@@ -29,6 +29,11 @@
     <string name="incorrect_url">Incorrect URL</string>
     <string name="unknown_host">Unknown host</string>
 
+    <string-array name="menu_list">
+        <item>Options</item>
+        <item>Change User Data</item>
+    </string-array>
+
     <string name="message_author">Author of message</string>
     <string name="message_text">Text of message</string>
 
@@ -40,8 +45,17 @@
     <string name="status">Status</string>
     <string name="your_message">Ваше сообщение</string>
 
-    <string name="ok_button">OK</string>
-    <string name="cancel_button">Cancel</string>
+    <string name="ok">OK</string>
+    <string name="cancel">Cancel</string>
     <string name="channel_name">Имя канала</string>
     <string name="channel_description">Короткое описание</string>
+    <string name="new_channel">Новый канал</string>
+    <string name="list_of_chats">Cписок чатов</string>
+    <string name="info">Info</string>
+    <string name="menu">Меню</string>
+    <string name="options">Опции</string>
+    <string name="change_user_data">Изменить пользовательские данные</string>
+
+    <string name="navigation_drawer_open">Открыть navigation drawer</string>
+    <string name="navigation_drawer_close">Закрыть navigation drawer</string>
 </resources>

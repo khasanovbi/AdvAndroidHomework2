@@ -86,8 +86,7 @@ public class ChannelListFragment extends Fragment implements ChannelListAdapter.
                 // TODO Drawer open
                 break;
             case R.id.add_channel_button:
-                Log.d("TODO", "Channel add popup");
-                mChannelAddDialogFragment.show(getActivity().getSupportFragmentManager(), "dlsadklasdklas");
+                mChannelAddDialogFragment.show(getActivity().getSupportFragmentManager(), "channelAddDialogFragment");
                 break;
             default:
                 return super.onOptionsItemSelected(item);
@@ -160,8 +159,8 @@ public class ChannelListFragment extends Fragment implements ChannelListAdapter.
 
     private void prepareActionBar() {
         MainActivity mainActivity = (MainActivity) getActivity();
-        ActionBar actionBar = mainActivity.getmActionBar();
-        actionBar.setTitle("Cписок чатов");
+        ActionBar actionBar = mainActivity.getMActionBar();
+        actionBar.setTitle(R.string.list_of_chats);
         actionBar.setHomeAsUpIndicator(R.drawable.ic_menu_white_24dp);
         actionBar.setIcon(R.drawable.ic_chat_white_24dp);
     }

@@ -27,9 +27,9 @@ public class ChannelAddDialogFragment extends DialogFragment implements OnClickL
         mChannelDescriptionEditText = (EditText) view.findViewById(R.id.channel_description);
 
         Builder alertDialogBuilder = new Builder(getActivity())
-                .setTitle("Новый канал")
-                .setPositiveButton(R.string.ok_button, this)
-                .setNegativeButton(R.string.cancel_button, this)
+                .setTitle(R.string.new_channel)
+                .setPositiveButton(R.string.ok, this)
+                .setNegativeButton(R.string.cancel, this)
                 .setView(view);
         return alertDialogBuilder.create();
     }

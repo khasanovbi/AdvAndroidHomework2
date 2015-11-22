@@ -102,7 +102,7 @@ public class ChatFragment extends Fragment implements OnClickListener, ChatAdapt
 
     @Override
     public void onItemClick(ChatAdapter.MessageViewHolder item, int position) {
-        Fragment contactInfoFragment = getActivity().getSupportFragmentManager().findFragmentById(R.id.contact_info);
+        Fragment contactInfoFragment = getActivity().getSupportFragmentManager().findFragmentById(R.id.fragment_contact_info);
         if (contactInfoFragment == null) {
             contactInfoFragment = new ContactInfoFragment();
             Bundle bundle = new Bundle();
@@ -175,7 +175,7 @@ public class ChatFragment extends Fragment implements OnClickListener, ChatAdapt
 
     private void prepareActionBar() {
         MainActivity mainActivity = (MainActivity) getActivity();
-        ActionBar actionBar = mainActivity.getmActionBar();
+        ActionBar actionBar = mainActivity.getMActionBar();
         actionBar.setTitle(mChannel.getName());
         actionBar.setHomeAsUpIndicator(R.drawable.ic_keyboard_arrow_left_white_24dp);
         actionBar.setIcon(R.drawable.ic_public_white_24dp);

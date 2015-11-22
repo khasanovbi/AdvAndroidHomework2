@@ -49,7 +49,11 @@ public class GlobalSocket implements SocketParams, Observable {
 
     @Override
     public void registerObserver(Observer o) {
-        observers.add(o);
+        synchronized (this) {
+            if (!observers.contains(o)) {
+                observers.add(o);
+            }
+        }
     }
 
     @Override

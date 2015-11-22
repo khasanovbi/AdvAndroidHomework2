@@ -58,6 +58,11 @@ public class ChannelListFragment extends Fragment implements ChannelListAdapter.
         mChannelListRecyclerView.setAdapter(mChannelListAdapter);
         mChannelListRecyclerView.setLayoutManager(linearLayoutManager);
         mChannelListRecyclerView.setItemAnimator(itemAnimator);
+
+        /* Subscribe to socket messages */
+        GlobalSocket.getInstance().registerObserver(this);
+        GlobalSocket.getInstance().performAsyncRequest(new ChannelListRequest(GlobalUserIds.getInstance().cid, GlobalUserIds.getInstance().sid));
+
         return rootView;
     }
 
@@ -94,9 +99,7 @@ public class ChannelListFragment extends Fragment implements ChannelListAdapter.
     @Override
     public void onResume() {
         super.onResume();
-        /* Subscribe to socket messages */
         GlobalSocket.getInstance().registerObserver(this);
-        GlobalSocket.getInstance().performAsyncRequest(new ChannelListRequest(GlobalUserIds.getInstance().cid, GlobalUserIds.getInstance().sid));
     }
 
     @Override

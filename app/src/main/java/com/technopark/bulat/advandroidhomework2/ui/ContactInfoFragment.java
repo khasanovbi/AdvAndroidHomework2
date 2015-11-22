@@ -43,15 +43,17 @@ public class ContactInfoFragment extends Fragment implements Observer {
         mNicknameTextView = (TextView) rootView.findViewById(R.id.contact_info_nickname);
         mStatusTextView = (TextView) rootView.findViewById(R.id.contact_info_status);
 
+        /* Subscribe to socket messages */
+        GlobalSocket.getInstance().registerObserver(this);
+        GlobalSocket.getInstance().performAsyncRequest(new UserInfoRequest(mUserId, GlobalUserIds.getInstance().cid, GlobalUserIds.getInstance().sid));
+
         return rootView;
     }
 
     @Override
     public void onResume() {
-        super.onResume();
-        /* Subscribe to socket messages */
         GlobalSocket.getInstance().registerObserver(this);
-        GlobalSocket.getInstance().performAsyncRequest(new UserInfoRequest(mUserId, GlobalUserIds.getInstance().cid, GlobalUserIds.getInstance().sid));
+        super.onResume();
     }
 
     @Override

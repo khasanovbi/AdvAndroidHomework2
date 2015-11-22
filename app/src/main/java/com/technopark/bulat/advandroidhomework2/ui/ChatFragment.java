@@ -66,15 +66,18 @@ public class ChatFragment extends Fragment implements OnClickListener, ChatAdapt
 
         mMessageEditText = (EditText) rootView.findViewById(R.id.message_text);
         rootView.findViewById(R.id.send_button).setOnClickListener(this);
+
+        /* Subscribe to socket messages */
+        GlobalSocket.getInstance().registerObserver(this);
+        GlobalSocket.getInstance().performAsyncRequest(new EnterChatRequest(GlobalUserIds.getInstance().cid, GlobalUserIds.getInstance().sid, mChannel.getId()));
+
         return rootView;
     }
 
     @Override
     public void onResume() {
         super.onResume();
-        /* Subscribe to socket messages */
         GlobalSocket.getInstance().registerObserver(this);
-        GlobalSocket.getInstance().performAsyncRequest(new EnterChatRequest(GlobalUserIds.getInstance().cid, GlobalUserIds.getInstance().sid, mChannel.getId()));
     }
 
     @Override

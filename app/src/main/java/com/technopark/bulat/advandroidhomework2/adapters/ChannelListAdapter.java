@@ -18,7 +18,7 @@ import com.technopark.bulat.advandroidhomework2.models.Channel;
  * Created by bulat on 07.11.15.
  */
 public class ChannelListAdapter extends RecyclerView.Adapter<ChannelListAdapter.ChannelViewHolder> {
-    private List<Channel> channelList;
+    private final List<Channel> channelList;
     private OnItemClickListener onItemClickListener;
 
     public ChannelListAdapter() {
@@ -38,7 +38,7 @@ public class ChannelListAdapter extends RecyclerView.Adapter<ChannelListAdapter.
     @Override
     public void onBindViewHolder(ChannelViewHolder holder, int position) {
         Channel channel = channelList.get(position);
-        holder.mName.setText(channel.getName() + " (" + String.valueOf(channel.getOnlineCount()) + ")");
+        holder.mName.setText(String.format("%s (%d)", channel.getName(), channel.getOnlineCount()));
         holder.mDescription.setText(channel.getDescription());
     }
 
@@ -65,8 +65,8 @@ public class ChannelListAdapter extends RecyclerView.Adapter<ChannelListAdapter.
     }
 
     public class ChannelViewHolder extends RecyclerView.ViewHolder implements OnClickListener {
-        private TextView mName;
-        private TextView mDescription;
+        private final TextView mName;
+        private final TextView mDescription;
 
         public ChannelViewHolder(View itemView) {
             super(itemView);

@@ -27,10 +27,6 @@ public class ChangeContactInfoFragment extends Fragment implements Observer, OnC
     private EditText mStatusEditText;
     private SharedPreferences mSharedPreferences;
 
-    public ChangeContactInfoFragment() {
-        // Required empty public constructor
-    }
-
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -100,7 +96,7 @@ public class ChangeContactInfoFragment extends Fragment implements Observer, OnC
                     public void run() {
                         String status = mStatusEditText.getText().toString();
                         mSharedPreferences.edit().putString("status", status).apply();
-                        ((TextView)((MainActivity) getActivity()).getDrawerLayout().findViewById(R.id.status)).setText(status);
+                        ((TextView) ((MainActivity) getActivity()).getDrawerLayout().findViewById(R.id.status)).setText(status);
                         Toast.makeText(getActivity().getBaseContext(), R.string.changes_saved, Toast.LENGTH_LONG).show();
                     }
                 });

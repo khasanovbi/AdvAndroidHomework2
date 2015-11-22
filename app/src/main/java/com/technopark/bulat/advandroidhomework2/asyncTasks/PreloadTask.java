@@ -8,7 +8,7 @@ import java.util.concurrent.TimeUnit;
  * Created by bulat on 05.11.15.
  */
 public class PreloadTask extends AsyncTask<Void, Void, Void> {
-    private OnPreloadTaskDone fragmentCallback;
+    private final OnPreloadTaskDone fragmentCallback;
     private static final int SLEEP_TIME = 2;
 
     public PreloadTask(OnPreloadTaskDone fragmentCallback) {

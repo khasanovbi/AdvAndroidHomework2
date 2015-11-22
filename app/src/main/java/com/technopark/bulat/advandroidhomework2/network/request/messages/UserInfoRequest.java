@@ -12,9 +12,9 @@ import java.util.Map;
  * Created by bulat on 16.11.15.
  */
 public class UserInfoRequest implements RequestMessage {
-    private String userId;
-    private String cid;
-    private String sid;
+    private final String userId;
+    private final String cid;
+    private final String sid;
 
     public UserInfoRequest(String userId, String cid, String sid) {
         this.userId = userId;

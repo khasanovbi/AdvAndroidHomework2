@@ -9,7 +9,7 @@ import org.json.JSONObject;
 
 public class RawResponse {
     private String action;
-    protected JSONObject jsonData;
+    private JSONObject jsonData;
 
     public RawResponse(String action, JSONObject jsonData) {
         this.action = action;

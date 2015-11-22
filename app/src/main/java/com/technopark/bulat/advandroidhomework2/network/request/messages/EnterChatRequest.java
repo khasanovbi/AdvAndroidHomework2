@@ -12,9 +12,9 @@ import java.util.Map;
  * Created by bulat on 16.11.15.
  */
 public class EnterChatRequest implements RequestMessage {
-    private String cid;
-    private String sid;
-    private String channelId;
+    private final String cid;
+    private final String sid;
+    private final String channelId;
 
     public EnterChatRequest(String cid, String sid, String channelId) {
         this.cid = cid;

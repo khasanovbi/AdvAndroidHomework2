@@ -12,8 +12,8 @@ import java.util.Map;
  * Created by bulat on 16.11.15.
  */
 public class ChannelListRequest implements RequestMessage {
-    private String cid;
-    private String sid;
+    private final String cid;
+    private final String sid;
 
     public ChannelListRequest(String cid, String sid) {
         this.cid = cid;

@@ -12,10 +12,10 @@ import java.util.Map;
  * Created by bulat on 16.11.15.
  */
 public class SendMessageRequest implements RequestMessage {
-    private String cid;
-    private String sid;
-    private String channelId;
-    private String text;
+    private final String cid;
+    private final String sid;
+    private final String channelId;
+    private final String text;
 
     public SendMessageRequest(String cid, String sid, String channelId, String text) {
         this.cid = cid;

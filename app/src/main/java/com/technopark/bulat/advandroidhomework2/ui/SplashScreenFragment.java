@@ -3,7 +3,6 @@ package com.technopark.bulat.advandroidhomework2.ui;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
 import android.support.v4.widget.DrawerLayout;
 import android.view.LayoutInflater;
@@ -23,12 +22,6 @@ import com.technopark.bulat.advandroidhomework2.network.response.messages.AuthRe
 import com.technopark.bulat.advandroidhomework2.network.response.messages.UserInfoResponse;
 import com.technopark.bulat.advandroidhomework2.network.socket.GlobalSocket;
 import com.technopark.bulat.advandroidhomework2.network.socket.socketObserver.Observer;
-
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Iterator;
-import java.util.List;
-import java.util.ListIterator;
 
 public class SplashScreenFragment extends Fragment implements OnPreloadTaskDone, Observer {
     private static final String LOG_TAG = "SplashScreenFragment";

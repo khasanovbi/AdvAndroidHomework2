@@ -26,7 +26,7 @@ import java.util.List;
  * Created by bulat on 11.11.15.
  */
 public class GlobalSocket implements SocketParams, Observable {
-    private List<Observer> observers = new ArrayList<>();
+    private final List<Observer> observers = new ArrayList<>();
     private static volatile GlobalSocket instance;
     private static final String LOG_TAG = "GlobalSocket";
     private static Socket socket;
@@ -106,7 +106,7 @@ public class GlobalSocket implements SocketParams, Observable {
         asyncThread.start();
     }
 
-    public void connect() {
+    private void connect() {
         Log.d(LOG_TAG, "connect");
         try {
             if (socket != null) {
@@ -170,7 +170,7 @@ public class GlobalSocket implements SocketParams, Observable {
     }
 
     private class Request extends Thread {
-        private RequestMessage requestMessage;
+        private final RequestMessage requestMessage;
 
         Request(RequestMessage requestMessage) {
             this.requestMessage = requestMessage;
@@ -196,7 +196,7 @@ public class GlobalSocket implements SocketParams, Observable {
         (new Request(requestMessage)).start();
     }
 
-    public RawResponse getRawResponse(JSONObject splitResponseJson) {
+    private RawResponse getRawResponse(JSONObject splitResponseJson) {
         try {
             String action = splitResponseJson.getString("action");
             JSONObject jsonData;

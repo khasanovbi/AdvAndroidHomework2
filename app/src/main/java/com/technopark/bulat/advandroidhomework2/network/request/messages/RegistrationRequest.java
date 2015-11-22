@@ -12,9 +12,9 @@ import java.util.Map;
  * Created by bulat on 16.11.15.
  */
 public class RegistrationRequest implements RequestMessage {
-    private String login;
-    private String password;
-    private String nickname;
+    private final String login;
+    private final String password;
+    private final String nickname;
 
     public RegistrationRequest(String login, String password, String nickname) {
         this.login = login;

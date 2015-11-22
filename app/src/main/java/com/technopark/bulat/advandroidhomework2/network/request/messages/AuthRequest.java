@@ -12,8 +12,8 @@ import java.util.Map;
  * Created by bulat on 16.11.15.
  */
 public class AuthRequest implements RequestMessage {
-    private String login;
-    private String password;
+    private final String login;
+    private final String password;
     public AuthRequest(String login, String password) {
         this.login = login;
         this.password = password;

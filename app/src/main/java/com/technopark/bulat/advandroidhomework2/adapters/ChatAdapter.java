@@ -18,7 +18,7 @@ import java.util.List;
  * Created by bulat on 08.11.15.
  */
 public class ChatAdapter extends RecyclerView.Adapter<ChatAdapter.MessageViewHolder> {
-    private List<Message> messages;
+    private final List<Message> messages;
     private final static int ANOTHER_USER = 0;
     private final static int CURRENT_USER = 1;
     private OnItemClickListener onItemClickListener;
@@ -83,9 +83,9 @@ public class ChatAdapter extends RecyclerView.Adapter<ChatAdapter.MessageViewHol
     }
 
     public class MessageViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
-        private TextView mMessageText;
-        private TextView mMessageAuthor;
-        public ImageView mAuthorImage;
+        private final TextView mMessageText;
+        private final TextView mMessageAuthor;
+        public final ImageView mAuthorImage;
 
         public MessageViewHolder(View itemView) {
             super(itemView);

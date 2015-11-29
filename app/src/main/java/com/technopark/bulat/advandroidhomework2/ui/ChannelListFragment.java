@@ -76,9 +76,10 @@ public class ChannelListFragment extends Fragment implements ChannelListAdapter.
             bundle.putSerializable(Channel.descriptionKey, channel);
             chatFragment.setArguments(bundle);
         }
-        FragmentTransaction transaction = getActivity().getSupportFragmentManager().beginTransaction();
-        transaction.addToBackStack(null);
-        transaction.replace(R.id.fragments_container, chatFragment).commit();
+        getActivity().getSupportFragmentManager()
+                .beginTransaction()
+                .addToBackStack(null)
+                .replace(R.id.fragments_container, chatFragment).commit();
     }
 
     @Override

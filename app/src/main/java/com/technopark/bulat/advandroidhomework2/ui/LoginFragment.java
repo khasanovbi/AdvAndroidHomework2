@@ -24,9 +24,6 @@ import com.technopark.bulat.advandroidhomework2.network.response.messages.UserIn
 import com.technopark.bulat.advandroidhomework2.network.socket.GlobalSocket;
 import com.technopark.bulat.advandroidhomework2.network.socket.socketObserver.Observer;
 
-/**
- * A simple {@link Fragment} subclass.
- */
 public class LoginFragment extends Fragment implements OnClickListener, Observer {
     private SharedPreferences mSharedPreferences;
     private EditText mLoginEditText;
@@ -63,6 +60,16 @@ public class LoginFragment extends Fragment implements OnClickListener, Observer
                 sharedPreferencesEditor.putString("password", password);
                 sharedPreferencesEditor.apply();
                 GlobalSocket.getInstance().performAsyncRequest(new AuthRequest(login, password));
+            }
+            case R.id.register_button: {
+                Fragment registerFragment = getActivity().getSupportFragmentManager().findFragmentById(R.id.fragment_register);
+                if (registerFragment == null) {
+                    registerFragment = new RegisterFragment();
+                }
+                getActivity().getSupportFragmentManager()
+                        .beginTransaction()
+                        .replace(R.id.fragments_container, registerFragment)
+                        .commit();
             }
         }
     }
@@ -109,8 +116,7 @@ public class LoginFragment extends Fragment implements OnClickListener, Observer
                             if (registerFragment == null) {
                                 registerFragment = new RegisterFragment();
                             }
-                            getActivity()
-                                    .getSupportFragmentManager()
+                            getActivity().getSupportFragmentManager()
                                     .beginTransaction()
                                     .replace(R.id.fragments_container, registerFragment)
                                     .commit();
@@ -120,8 +126,7 @@ public class LoginFragment extends Fragment implements OnClickListener, Observer
                             if (loginFragment == null) {
                                 loginFragment = new LoginFragment();
                             }
-                            getActivity()
-                                    .getSupportFragmentManager()
+                            getActivity().getSupportFragmentManager()
                                     .beginTransaction()
                                     .replace(R.id.fragments_container, loginFragment)
                                     .commit();
@@ -149,8 +154,7 @@ public class LoginFragment extends Fragment implements OnClickListener, Observer
                     if (channelListFragment == null) {
                         channelListFragment = new ChannelListFragment();
                     }
-                    getActivity()
-                            .getSupportFragmentManager()
+                    getActivity().getSupportFragmentManager()
                             .beginTransaction()
                             .replace(R.id.fragments_container, channelListFragment)
                             .commit();

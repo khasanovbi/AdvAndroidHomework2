@@ -73,6 +73,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 }
                 getSupportFragmentManager()
                         .beginTransaction()
+                        .addToBackStack(null)
                         .replace(R.id.fragments_container, channelListFragment)
                         .commit();
                 break;
@@ -83,6 +84,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 }
                 getSupportFragmentManager()
                         .beginTransaction()
+                        .addToBackStack(null)
                         .replace(R.id.fragments_container, settingsFragment)
                         .commit();
                 break;
@@ -93,6 +95,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 }
                 getSupportFragmentManager()
                         .beginTransaction()
+                        .addToBackStack(null)
                         .replace(R.id.fragments_container, changeContactInfoFragment)
                         .commit();
                 break;

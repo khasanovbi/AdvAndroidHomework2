@@ -17,6 +17,7 @@ import com.technopark.bulat.advandroidhomework2.asyncTasks.PreloadTask;
 import com.technopark.bulat.advandroidhomework2.models.GlobalUserIds;
 import com.technopark.bulat.advandroidhomework2.network.request.messages.AuthRequest;
 import com.technopark.bulat.advandroidhomework2.network.request.messages.UserInfoRequest;
+import com.technopark.bulat.advandroidhomework2.network.response.ErrorResponse;
 import com.technopark.bulat.advandroidhomework2.network.response.RawResponse;
 import com.technopark.bulat.advandroidhomework2.network.response.messages.AuthResponse;
 import com.technopark.bulat.advandroidhomework2.network.response.messages.UserInfoResponse;
@@ -147,6 +148,14 @@ public class SplashScreenFragment extends Fragment implements OnPreloadTaskDone,
                         }
                     });
                 }
+                break;
+            case "error":
+                final ErrorResponse errorResponse = new ErrorResponse(rawResponse.getJsonData());
+                getActivity().runOnUiThread(new Runnable() {
+                    public void run() {
+                        Toast.makeText(getActivity().getBaseContext(), getResources().getStringArray(R.array.errors)[errorResponse.getErrorCode()], Toast.LENGTH_SHORT).show();
+                    }
+                });
                 break;
         }
     }

@@ -1,13 +1,15 @@
 <resources>
     <string name="app_name">Go Messenger</string>
 
-    <string name="login">Login</string>
-    <string name="password">Password</string>
-
     <string name="message_author">Author of message</string>
     <string name="message_text">Text of message</string>
 
-    <string name="register_button_text">Регистрация</string>
+    <string name="register">Регистрация</string>
+    <string name="login">Login</string>
+    <string name="password">Пароль</string>
+    <string name="do_login">Войти</string>
+    <string name="do_register">Зарегистрироваться</string>
+
     <string name="nickname">Ник</string>
     <string name="add_channel">Создать чат</string>
     <string name="settings">Настройки</string>
@@ -29,4 +31,11 @@
     <string name="navigation_drawer_close">Закрыть navigation drawer</string>
     <string name="save">Сохранить</string>
     <string name="changes_saved">Изменения сохранены</string>
+
+    <string-array name="errors">
+        <item>Error connecting to resource</item>
+        <item>Incorrect URL</item>
+        <item>Unknown host</item>
+        <item>IO error</item>
+    </string-array>
 </resources>

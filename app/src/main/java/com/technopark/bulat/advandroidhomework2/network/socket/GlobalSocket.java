@@ -16,8 +16,11 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.net.ConnectException;
 import java.net.Socket;
+import java.net.SocketException;
 import java.net.SocketTimeoutException;
+import java.net.UnknownHostException;
 import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.List;
@@ -58,25 +61,29 @@ public class GlobalSocket implements SocketParams, Observable {
 
     @Override
     public void removeObserver(Observer o) {
-        observers.remove(o);
+        synchronized (this) {
+            observers.remove(o);
+        }
     }
 
     @Override
     public void notifyObservers(RawResponse rawResponse) {
-        for (Observer observer : observers) {
-            observer.handleResponseMessage(rawResponse);
+        synchronized (this) {
+            for (Observer observer : observers) {
+                observer.handleResponseMessage(rawResponse);
+            }
         }
     }
 
     private GlobalSocket() {
         turnOnAsyncThread();
     }
+
     public void turnOnAsyncThread() {
         asyncThread = new Thread(new Runnable() {
             @Override
             public void run() {
                 while (true) {
-                    // Log.d(LOG_TAG, "AsyncThreadRun");
                     String responseString;
                     try {
                         Thread.sleep(SOCKET_CHECK_TIME);
@@ -88,7 +95,7 @@ public class GlobalSocket implements SocketParams, Observable {
                         try {
                             /* Когда из socket'а прочитано более 1 строки. */
                             while (responseString.length() > 0) {
-                                JSONObject splitResponseJson =  new JSONObject(responseString);
+                                JSONObject splitResponseJson = new JSONObject(responseString);
                                 int splitResponseStringLength = splitResponseJson.toString().length();
                                 RawResponse rawResponse = getRawResponse(splitResponseJson);
                                 if (rawResponse != null) {
@@ -106,7 +113,7 @@ public class GlobalSocket implements SocketParams, Observable {
         asyncThread.start();
     }
 
-    private void connect() {
+    private int connect() {
         Log.d(LOG_TAG, "connect");
         try {
             if (socket != null) {
@@ -122,14 +129,41 @@ public class GlobalSocket implements SocketParams, Observable {
             socket.setSoTimeout(SOCKET_READ_KEEPALIVE);
             inputStream = new BufferedInputStream(socket.getInputStream());
             outputStream = socket.getOutputStream();
+        } catch (ConnectException e) {
+            e.printStackTrace();
+            notifyObservers(getErrorRawResponse(0));
+            return -1;
+        } catch (UnknownHostException e) {
+            e.printStackTrace();
+            notifyObservers(getErrorRawResponse(1));
+            return -1;
+        } catch (SocketException e) {
+            e.printStackTrace();
+            notifyObservers(getErrorRawResponse(2));
+            return -1;
         } catch (IOException e) {
             e.printStackTrace();
+            notifyObservers(getErrorRawResponse(3));
+            return -1;
         }
+        return 0;
+    }
+
+    private RawResponse getErrorRawResponse(int errorCode) {
+        JSONObject error = new JSONObject();
+        try {
+            error.put("Message", errorCode);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        return new RawResponse("error", error);
     }
 
     private String readInputStream() {
         if (socket == null || !socket.isConnected()) {
-            connect();
+            if (connect() == -1) {
+                return "";
+            }
         }
         String output = null;
         try {
@@ -148,7 +182,9 @@ public class GlobalSocket implements SocketParams, Observable {
                     if (read == 0) {
                         break;
                     } else {
-                        connect();
+                        if (connect() == -1) {
+                            return "";
+                        }
                     }
                 }
                 try {
@@ -181,7 +217,9 @@ public class GlobalSocket implements SocketParams, Observable {
             String requestString = requestMessage.getRequestString();
             Log.d(LOG_TAG, "Request: " + requestString);
             if (socket == null || !socket.isConnected()) {
-                connect();
+                if (connect() == -1) {
+                    return;
+                }
             }
             try {
                 outputStream.write(requestString.getBytes(Charset.forName("UTF-8")));

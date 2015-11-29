@@ -61,7 +61,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center_horizontal"
-            android:text="@string/register_button_text" />
+            android:text="@string/do_register" />
 
     </LinearLayout>
 </ScrollView>
